@@ -19,8 +19,13 @@ public class loginController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        UserLocation.setText("Location: " + userLocation);
-        UserLanguage.setText("Language: " + userLanguage);
+
+        ResourceBundle rb = ResourceBundle.getBundle("main/Language", Locale.getDefault());
+
+        UserLocation.setText("Location" + ": " + userLocation);
+        UserLanguage.setText("Language" + ": " + userLanguage);
+
+        //System.out.println("hello" + "world");
     }
 
     public void onLoginPress(ActionEvent actionEvent) {
