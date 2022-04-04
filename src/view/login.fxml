@@ -10,13 +10,13 @@
     <children>
         <AnchorPane prefHeight="162.0" prefWidth="166.0">
             <children>
-                <Label layoutX="83.0" layoutY="92.0" prefHeight="18.0" prefWidth="61.0" text="Username" />
-                <Label layoutX="83.0" layoutY="154.0" prefHeight="17.0" prefWidth="61.0" text="Password" />
+                <Label fx:id="Username" layoutX="83.0" layoutY="92.0" prefHeight="18.0" prefWidth="61.0" text="Username" />
+                <Label fx:id="Password" layoutX="83.0" layoutY="154.0" prefHeight="17.0" prefWidth="61.0" text="Password" />
                 <Label fx:id="UserLocation" layoutX="14.0" layoutY="14.0" prefHeight="17.0" prefWidth="199.0" text="User Location: " textFill="#00000098" />
                 <Label fx:id="UserLanguage" layoutX="14.0" layoutY="37.0" prefHeight="17.0" prefWidth="199.0" text="Language: " textFill="#00000098" />
             </children></AnchorPane>
         <Button layoutX="216.0" layoutY="193.0" mnemonicParsing="false" onAction="#onLoginPress" text="Login" />
-        <PasswordField layoutX="164.0" layoutY="150.0" />
-        <TextField layoutX="164.0" layoutY="90.0" />
+        <PasswordField fx:id="PasswordInput" layoutX="164.0" layoutY="150.0" />
+        <TextField fx:id="UsernameInput" layoutX="164.0" layoutY="90.0" />
     </children>
 </AnchorPane>

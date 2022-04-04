@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 public class Query {
     private static String query;
     private static PreparedStatement ps;
-    private static ResultSet result;
+    public static ResultSet result;
 
     public static void makeQuery(String q) {
         query = q;
@@ -16,6 +16,7 @@ public class Query {
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
         }
+
     }
 
     public static ResultSet getResult() {
