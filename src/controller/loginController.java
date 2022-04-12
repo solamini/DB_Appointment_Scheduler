@@ -3,12 +3,17 @@ package controller;
 import DAO.Query;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import DAO.UserDaoImpl;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 import model.User;
 import DAO.JDBC;
 
@@ -37,6 +42,9 @@ public class loginController implements Initializable {
     private String userLocation = String.valueOf(Locale.getDefault().getCountry());
     private String userLanguage = String.valueOf(Locale.getDefault().getLanguage());
 
+    private String LoggedIn;
+    private String NotLoggedIn;
+
 
 
 
@@ -50,6 +58,8 @@ public class loginController implements Initializable {
         UserLocation.setText(rb.getString("Location") + ": " + userLocation);
         UserLanguage.setText(rb.getString("Language") + ": " + userLanguage);
 
+        LoggedIn = rb.getString("LoggedIn");
+        NotLoggedIn = rb.getString("NotLoggedIn");
 
     }
 
@@ -63,11 +73,16 @@ public class loginController implements Initializable {
             Alert alert;
             if (login) {
                 alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setContentText("You have logged in!");
+                alert.setContentText(LoggedIn);
+                Parent root = FXMLLoader.load(getClass().getResource("/view/customers.fxml"));
+                Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+                stage.setTitle("Customers");
+                stage.setScene(new Scene(root, 785, 560));
+                stage.show();
             }
             else {
                 alert = new Alert(Alert.AlertType.WARNING);
-                alert.setContentText("Username or Password is incorrect!");
+                alert.setContentText(NotLoggedIn);
             }
             alert.show();
 
