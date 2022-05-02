@@ -51,7 +51,7 @@ public class loginController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        ResourceBundle rb = ResourceBundle.getBundle("main/Language", Locale.getDefault());
+        ResourceBundle rb = ResourceBundle.getBundle("main/language", Locale.getDefault());
 
         Username.setText(rb.getString("Username"));
         Password.setText(rb.getString("Password"));
@@ -89,7 +89,6 @@ public class loginController implements Initializable {
         }
         catch(Exception e) {
             e.printStackTrace();
-            System.out.println("it did NOT work");
         }
 
 

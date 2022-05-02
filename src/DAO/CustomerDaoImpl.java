@@ -3,7 +3,6 @@ package DAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.Customer;
-import model.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,8 +21,8 @@ public class CustomerDaoImpl {
             String cusAddress = result.getString("Address");
             String cusPostal = result.getString("Postal_Code");
             String cusPhoneNum = result.getString("Phone");
-            customerResult = new Customer(cusId, cusName, cusAddress, cusPostal, cusPhoneNum);
-            System.out.println(customerResult.getCusName() + " " + customerResult.getCusPostal());
+            int cusDivId = result.getInt("Division_ID");
+            customerResult = new Customer(cusId, cusName, cusAddress, cusPostal, cusPhoneNum, cusDivId);
             return customerResult;
         }
         return customerResult;
@@ -43,9 +42,9 @@ public class CustomerDaoImpl {
             String cusAddress = result.getString("Address");
             String cusPostal = result.getString("Postal_Code");
             String cusPhoneNum = result.getString("Phone");
-            Customer customerResult = new Customer(cusId, cusName, cusAddress, cusPostal, cusPhoneNum);
+            int cusDivId = result.getInt("Division_ID");
+            Customer customerResult = new Customer(cusId, cusName, cusAddress, cusPostal, cusPhoneNum, cusDivId);
             customerList.add(customerResult);
-            //System.out.println(customerResult.getCusName() + " " + customerResult.getCusPostal());
 
         }
         return customerList;

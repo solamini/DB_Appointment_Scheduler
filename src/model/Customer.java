@@ -6,16 +6,18 @@ public class Customer {
     private String cusAddress;
     private String cusPostal;
     private String cusPhoneNum;
+    private int cusDivID;
 
     public Customer(){
     }
 
-    public Customer(int cusID, String cusName, String cusAddress, String cusPostal, String cusPhoneNum){
+    public Customer(int cusID, String cusName, String cusAddress, String cusPostal, String cusPhoneNum,int cusDivID){
         this.cusID = cusID;
         this.cusName = cusName;
         this.cusAddress = cusAddress;
         this.cusPostal = cusPostal;
         this.cusPhoneNum = cusPhoneNum;
+        this.cusDivID = cusDivID;
     }
 
     public int getCusID() {
@@ -25,11 +27,22 @@ public class Customer {
         this.cusID = cusID;
     }
 
-    public String getCusName() {
+    public String getCusFullName() {
         return cusName;
     }
     public void setCusID(String cusName) {
         this.cusName = cusName;
+    }
+
+    public String getCusFirstName(){
+        String[] arrayOfStr = cusName.split(" ");
+        String firstName = arrayOfStr[0];
+        return firstName;
+    }
+    public String getCusLastName(){
+        String[] arrayOfStr = cusName.split(" ");
+        String lastName = arrayOfStr[1];
+        return lastName;
     }
 
     public String getCusAddress() {
@@ -51,6 +64,13 @@ public class Customer {
     }
     public void setCusPhoneNum(String cusPhoneNum) {
         this.cusPhoneNum = cusPhoneNum;
+    }
+
+    public void setCusDivID(int cusDivID) {
+        this.cusDivID = cusDivID;
+    }
+    public int getCusDivID() {
+        return cusDivID;
     }
 }
 

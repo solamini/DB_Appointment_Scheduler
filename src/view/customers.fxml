@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.customersController">
     <children>
@@ -11,7 +12,7 @@
                     <items>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="315.0" prefWidth="168.0">
                             <children>
-                                <TableView fx:id="CustomerTable" layoutY="-1.0" prefHeight="502.0" prefWidth="373.0">
+                                <TableView fx:id="CustomerTable" layoutY="-1.0" onMouseClicked="#onMouseClicked" prefHeight="502.0" prefWidth="373.0">
                                     <columns>
                                         <TableColumn fx:id="CustomerID" prefWidth="40.0" text="CusID" />
                                         <TableColumn fx:id="CustomerName" prefWidth="100.0" text="Name" />
@@ -46,7 +47,7 @@
                                         <TextField fx:id="LastNameText" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                         <TextField fx:id="AddressText" promptText="ex: 123 ABC Street, White Plains" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                         <TextField fx:id="PostalText" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                                        <TextField fx:id="PhoneNumberText" promptText="ex: 821-532-7764" GridPane.columnIndex="2" GridPane.rowIndex="7" />
+                                        <TextField fx:id="PhoneNumberText" GridPane.columnIndex="2" GridPane.rowIndex="7" />
                                         <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="81.0" text="Customer ID" textAlignment="RIGHT" GridPane.columnIndex="1" />
                                         <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="81.0" text="First Name" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                         <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="81.0" text="Last Name" GridPane.columnIndex="1" GridPane.rowIndex="2" />
@@ -57,7 +58,10 @@
                                         <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="85.0" text="Phone Number" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                                         <ComboBox fx:id="CountryCombo" prefHeight="25.0" prefWidth="278.0" GridPane.columnIndex="2" GridPane.rowIndex="5" />
                                         <ComboBox fx:id="StateCombo" prefHeight="25.0" prefWidth="278.0" GridPane.columnIndex="2" GridPane.rowIndex="6" />
-                                        <Label fx:id="CusIDLabel" alignment="CENTER" prefHeight="17.0" prefWidth="87.0" GridPane.columnIndex="2" />
+                                        <Label fx:id="CusIDLabel" prefHeight="17.0" prefWidth="87.0" GridPane.columnIndex="2">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font></Label>
                                         <ButtonBar buttonMinWidth="45.0" prefHeight="40.0" prefWidth="278.0" GridPane.columnIndex="2" GridPane.rowIndex="8">
                                             <buttons>
                                                 <Button fx:id="AddButton" mnemonicParsing="false" onAction="#onAddClick" text="Add" />
