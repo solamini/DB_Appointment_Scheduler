@@ -3,9 +3,11 @@ package DAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.Customer;
+import model.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class CustomerDaoImpl {
     public static Customer getCustomer(int cusID) throws SQLException {
@@ -48,5 +50,22 @@ public class CustomerDaoImpl {
 
         }
         return customerList;
+    }
+
+    public static int generateCustomerId() throws SQLException {
+        int newId = 0;
+        ObservableList<Customer> allCustomers = getAllCustomers();
+        ArrayList<Integer> idNumbers = new ArrayList<Integer>();
+
+        for (Customer c : allCustomers) {
+            idNumbers.add(c.getCusID());
+        }
+        for (int i = 1; i < (allCustomers.size() * 2) ; i++) { //checks if any ID number starting from 1 is available to be used
+            if(!idNumbers.contains(i)) {
+                newId = i; //assigns i to the newId number if i does not have an ID assigned to it already.
+                break; //ends the for loop when newId gets assigned i
+            }
+        }
+        return newId;
     }
 }

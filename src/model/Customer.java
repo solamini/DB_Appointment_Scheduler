@@ -30,8 +30,11 @@ public class Customer {
     public String getCusFullName() {
         return cusName;
     }
-    public void setCusID(String cusName) {
+    public void setCusFullName(String cusName) {
         this.cusName = cusName;
+    }
+    public void setCusFullName(String firstName, String lastName) {
+        this.cusName = firstName + " " + lastName;
     }
 
     public String getCusFirstName(){

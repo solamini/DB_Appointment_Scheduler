@@ -26,6 +26,24 @@ public class FLDivisionDaoImpl {
         return divisionResult;
     }
 
+    public static FLDivision getFLDivision(String divName) throws SQLException {
+        FLDivision divisionResult = new FLDivision();
+
+        JDBC.getConnection();
+        String sqlStmt = "SELECT * FROM first_level_divisions WHERE Division = '" + divName + "'";
+        Query.makeQuery(sqlStmt);
+        ResultSet result = Query.getResult();
+        if (result.next()) {
+            int divId = result.getInt("Division_ID");
+            String divisionName = result.getString("Division");
+            int countryId = result.getInt("Country_ID");
+            divisionResult = new FLDivision(divId, divisionName, countryId);
+            return divisionResult;
+        }
+        return divisionResult;
+    }
+
+
     public static ObservableList<FLDivision> getAllFLDivisions() throws SQLException {
         ObservableList<FLDivision> divisionsList = FXCollections.observableArrayList();
 

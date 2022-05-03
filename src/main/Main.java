@@ -13,6 +13,8 @@ import model.User;
 
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -26,7 +28,7 @@ public class Main extends Application {
         //ResourceBundle rb = ResourceBundle.getBundle("main/Language", Locale.getDefault());
 
         Parent root = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
-        primaryStage.setTitle("Hello World");
+        primaryStage.setTitle("Login Screen");
         primaryStage.setScene(new Scene(root, 450, 300));
         primaryStage.show();
 
@@ -38,8 +40,7 @@ public class Main extends Application {
 	// write your code here
         launch(args);
 
-        //String test = String.valueOf(UserDaoImpl.getUser("test").getPassword());
-        //System.out.println(test);
+
 
         JDBC.closeConnection();
 

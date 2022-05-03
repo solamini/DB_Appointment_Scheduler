@@ -3,6 +3,7 @@ package controller;
 import DAO.CountryDaoImpl;
 import DAO.CustomerDaoImpl;
 import DAO.FLDivisionDaoImpl;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -10,6 +11,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import model.Country;
 import model.Customer;
 import model.FLDivision;
 
@@ -55,6 +57,8 @@ public class customersController implements Initializable {
         return currentCustomer;
     }
 
+    ObservableList<Customer> customersTableList = FXCollections.observableArrayList();
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -67,14 +71,59 @@ public class customersController implements Initializable {
 
 
         try {
-            CustomerTable.setItems(CustomerDaoImpl.getAllCustomers());
+            customersTableList = CustomerDaoImpl.getAllCustomers();
+            CustomerTable.setItems(customersTableList);
             CountryCombo.setItems(CountryDaoImpl.getAllCountries());
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+    private void clearAllFields () {
+        CusIDLabel.setText("");
+        FirstNameText.clear();
+        LastNameText.clear();
+        AddressText.clear();
+        PostalText.clear();
+        PhoneNumberText.clear();
+        CountryCombo.getSelectionModel().clearSelection();
+        StateCombo.getSelectionModel().clearSelection();
+    }
 
     public void onAddClick(ActionEvent actionEvent) {
+        Alert alert;
+        try {
+            if(FirstNameText.getText().isEmpty() || LastNameText.getText().isEmpty() || AddressText.getText().isEmpty() || PostalText.getText().isEmpty()
+                    || PhoneNumberText.getText().isEmpty()) {
+                alert = new Alert(Alert.AlertType.ERROR);
+                alert.setContentText("Please make sure all fields are entered.");
+                alert.show();
+            }
+            else if(CountryCombo.getSelectionModel().isEmpty() || StateCombo.getSelectionModel().isEmpty()){
+                alert = new Alert(Alert.AlertType.ERROR);
+                alert.setContentText("Please select the Country and Region.");
+                alert.show();
+            }
+            else {
+                int cusID = CustomerDaoImpl.generateCustomerId();
+                String cusName = FirstNameText.getText() + " " + LastNameText.getText();
+                String cusAddress = AddressText.getText();
+                String cusPostal = PostalText.getText();
+                String cusPhoneNum = PhoneNumberText.getText();
+                int cusDivision = FLDivisionDaoImpl.getFLDivision(String.valueOf(StateCombo.getValue())).getDivID();
+
+                Customer newCustomer = new Customer(cusID, cusName, cusAddress, cusPostal, cusPhoneNum, cusDivision);
+                customersTableList.add(newCustomer);
+                CustomerTable.refresh();
+
+                clearAllFields();
+            }
+
+        }
+        catch (Exception e) {
+            Alert alert2 = new Alert(Alert.AlertType.WARNING);
+            alert2.setContentText("Please check your inputs and try again. Make sure all fields are filled.");
+        }
     }
 
     public void onUpdateClick(ActionEvent actionEvent) {
@@ -84,14 +133,7 @@ public class customersController implements Initializable {
     }
 
     public void onCancelClick(ActionEvent actionEvent) {
-        CusIDLabel.setText("");
-        FirstNameText.clear();
-        LastNameText.clear();
-        AddressText.clear();
-        PostalText.clear();
-        PhoneNumberText.clear();
-        CountryCombo.getSelectionModel().clearSelection();
-        StateCombo.getSelectionModel().clearSelection();
+        clearAllFields();
     }
 
     public void onAppointmentsClick(ActionEvent actionEvent) {
@@ -118,7 +160,15 @@ public class customersController implements Initializable {
                     StateCombo.getSelectionModel().clearAndSelect(i);
                 }
             }
+        }
+        catch (Exception e) {
+        }
+    }
 
+    public void onCountryComboAction(ActionEvent actionEvent) {
+        try{
+            int countryID = ((Country) CountryCombo.getSelectionModel().getSelectedItem()).getCountryID();
+            StateCombo.setItems(FLDivisionDaoImpl.getAllCountryDivisions(countryID));
         }
         catch (Exception e) {
         }

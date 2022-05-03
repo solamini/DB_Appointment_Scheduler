@@ -24,6 +24,8 @@ public class UserDaoImpl {
         return userResult;
     }
 
+
+
     public static Boolean loginAttempt(String inputUsername, String inputPassword) throws SQLException {
         User newUser = getUser(inputUsername);
         String userPassword = newUser.getPassword();
@@ -38,5 +40,7 @@ public class UserDaoImpl {
         //else { return false;}
         return false;
     }
+
+
 
 }
