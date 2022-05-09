@@ -45,7 +45,7 @@ public class loginController implements Initializable {
     private String LoggedIn;
     private String NotLoggedIn;
 
-
+    public static User loggedInUser;
 
 
     @Override
@@ -65,7 +65,7 @@ public class loginController implements Initializable {
 
     @FXML
     void onLoginPress(ActionEvent event) throws SQLException {
-        //System.out.println("its tracking obviously");
+
 
         try {
             Boolean login = UserDaoImpl.loginAttempt(UsernameInput.getText(), PasswordInput.getText());
@@ -79,6 +79,7 @@ public class loginController implements Initializable {
                 stage.setTitle("Customers");
                 stage.setScene(new Scene(root, 785, 560));
                 stage.show();
+                loggedInUser = UserDaoImpl.getUser(UsernameInput.getText());
             }
             else {
                 alert = new Alert(Alert.AlertType.WARNING);

@@ -1,8 +1,6 @@
 package controller;
 
-import DAO.CountryDaoImpl;
-import DAO.CustomerDaoImpl;
-import DAO.FLDivisionDaoImpl;
+import DAO.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -11,12 +9,16 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import main.TimeZoneHelper;
 import model.Country;
 import model.Customer;
 import model.FLDivision;
 
 import java.net.URL;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class customersController implements Initializable {
@@ -111,11 +113,21 @@ public class customersController implements Initializable {
                 String cusPostal = PostalText.getText();
                 String cusPhoneNum = PhoneNumberText.getText();
                 int cusDivision = FLDivisionDaoImpl.getFLDivision(String.valueOf(StateCombo.getValue())).getDivID();
+                //LocalDateTime createdDateTime = TimeZoneHelper.LocalToUTCTimestamp().toLocalDateTime();
+                Timestamp createdTimeStamp = TimeZoneHelper.LocalToUTCTimestamp();
+                String userName = loginController.loggedInUser.getUserName();
 
                 Customer newCustomer = new Customer(cusID, cusName, cusAddress, cusPostal, cusPhoneNum, cusDivision);
                 customersTableList.add(newCustomer);
                 CustomerTable.refresh();
 
+                JDBC.getConnection();
+                String sqlStmt = "INSERT INTO customers VALUES("+cusID+",'"+cusName+"','"+cusAddress+"','"+cusPostal+"','"+cusPhoneNum+"','"
+                        +createdTimeStamp+"','"+userName+"','"+createdTimeStamp+"','"+userName+"',"+cusDivision+")";
+
+                Query.dataManipulateQuery(sqlStmt);
+
+                //System.out.println("INSERT INTO customers VALUES("+cusID+",'"+cusName+"','"+cusAddress+"','"+cusPostal+"','"+cusPhoneNum+"','"+createdTimeStamp+"','"+"Alex Created"+"','"+createdTimeStamp+"','"+"Alex Updated"+"',"+cusDivision+")");
                 clearAllFields();
             }
 
@@ -127,19 +139,83 @@ public class customersController implements Initializable {
     }
 
     public void onUpdateClick(ActionEvent actionEvent) {
+        Alert alert;
+        try {
+            if (FirstNameText.getText().isEmpty() || LastNameText.getText().isEmpty() || AddressText.getText().isEmpty() || PostalText.getText().isEmpty()
+                    || PhoneNumberText.getText().isEmpty()) {
+                alert = new Alert(Alert.AlertType.ERROR);
+                alert.setContentText("Please make sure all fields are entered.");
+                alert.show();
+            } else if (CountryCombo.getSelectionModel().isEmpty() || StateCombo.getSelectionModel().isEmpty()) {
+                alert = new Alert(Alert.AlertType.ERROR);
+                alert.setContentText("Please select the Country and Region.");
+                alert.show();
+            } else {
+                Customer updateCustomer = CustomerTable.getSelectionModel().getSelectedItem();
+
+                String cusID = CusIDLabel.getText();
+                String cusName = FirstNameText.getText() + " " + LastNameText.getText();
+                String cusAddress = AddressText.getText();
+                String cusPostal = PostalText.getText();
+                String cusPhoneNum = PhoneNumberText.getText();
+                int cusDivision = FLDivisionDaoImpl.getFLDivision(String.valueOf(StateCombo.getValue())).getDivID();
+                Timestamp createdTimeStamp = TimeZoneHelper.LocalToUTCTimestamp();
+                String userName = loginController.loggedInUser.getUserName();
+
+                updateCustomer.setCusFullName(cusName);
+                updateCustomer.setCusAddress(cusAddress);
+                updateCustomer.setCusPostal(cusPostal);
+                updateCustomer.setCusPhoneNum(cusPhoneNum);
+                updateCustomer.setCusDivID(cusDivision);
+
+                CustomerTable.refresh();
+
+                JDBC.getConnection();
+                String sqlStmt = "UPDATE customers SET Customer_Name='"+ cusName + "', Address='" + cusAddress + "', Postal_Code='" + cusPostal + "', Phone='" + cusPhoneNum + "',Last_Update='"
+                        + createdTimeStamp + "', Last_Updated_By='" + userName + "', Division_ID='" + cusDivision + "' WHERE Customer_ID="+cusID;
+
+                Query.dataManipulateQuery(sqlStmt);
+            }
+        }
+        catch (Exception e) {
+            Alert alert2 = new Alert(Alert.AlertType.WARNING);
+            alert2.setContentText("Please check your inputs and try again. Make sure all fields are filled.");
+        }
     }
 
     public void onDeleteClick(ActionEvent actionEvent) {
+        JDBC.getConnection();
+        try {
+            String cusID = CusIDLabel.getText();
+            String sqlStmt = "DELETE FROM customers WHERE Customer_ID = '"+cusID+"'";
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"Are you sure you want to delete the selected item?");
+            alert.setTitle("Customer");
+            alert.setHeaderText("Delete");
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if(result.isPresent() && result.get() == ButtonType.OK) {
+
+                Query.dataManipulateQuery(sqlStmt);
+
+                customersTableList = CustomerDaoImpl.getAllCustomers();
+                CustomerTable.setItems(customersTableList);
+
+                Alert alert2 = new Alert(Alert.AlertType.INFORMATION, "You have deleted the customer.");
+                alert2.show();
+            }
+        }
+        catch (Exception e){}
+
     }
 
-    public void onCancelClick(ActionEvent actionEvent) {
+    public void onClearClick(ActionEvent actionEvent) {
         clearAllFields();
     }
 
     public void onAppointmentsClick(ActionEvent actionEvent) {
     }
 
-    public void onMouseClicked(MouseEvent mouseEvent) {
+    public void onMouseClickedOnTable(MouseEvent mouseEvent) {
         try {
             currentCustomer = CustomerTable.getSelectionModel().getSelectedItem();
 

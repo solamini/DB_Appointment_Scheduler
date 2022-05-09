@@ -1,24 +1,14 @@
 package main;
 
-import DAO.CustomerDaoImpl;
 import DAO.JDBC;
-import DAO.UserDaoImpl;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import model.User;
-
 
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.Locale;
-import java.util.ResourceBundle;
-
-import static DAO.UserDaoImpl.getUser;
+import java.time.Instant;
 
 
 public class Main extends Application {
@@ -40,6 +30,8 @@ public class Main extends Application {
 	// write your code here
         launch(args);
 
+        //System.out.println(TimeZoneHelper.LocalToUTCTimestamp());
+        //System.out.println(TimeZoneHelper.UTCToLocalTimestamp(TimeZoneHelper.LocalToUTCTimestamp()));
 
 
         JDBC.closeConnection();

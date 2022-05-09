@@ -19,7 +19,18 @@ public class Query {
 
     }
 
+    public static void dataManipulateQuery(String q) {
+        query = q;
+        try {
+            ps = JDBC.getConnection().prepareStatement(q);
+            ps.execute();
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex.getMessage());
+        }
+
+    }
     public static ResultSet getResult() {
         return result;
     }
+
 }
