@@ -15,7 +15,6 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        //ResourceBundle rb = ResourceBundle.getBundle("main/Language", Locale.getDefault());
 
         Parent root = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
         primaryStage.setTitle("Login Screen");

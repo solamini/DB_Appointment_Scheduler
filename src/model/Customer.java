@@ -75,5 +75,11 @@ public class Customer {
     public int getCusDivID() {
         return cusDivID;
     }
+
+    @Override
+    public String toString(){
+        return(String.valueOf(cusID));
+    }
 }
+
 

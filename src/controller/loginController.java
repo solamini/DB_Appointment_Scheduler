@@ -77,7 +77,7 @@ public class loginController implements Initializable {
                 Parent root = FXMLLoader.load(getClass().getResource("/view/customers.fxml"));
                 Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
                 stage.setTitle("Customers");
-                stage.setScene(new Scene(root, 785, 560));
+                stage.setScene(new Scene(root, 785, 570));
                 stage.show();
                 loggedInUser = UserDaoImpl.getUser(UsernameInput.getText());
             }

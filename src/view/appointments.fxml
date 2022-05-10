@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="494.0" prefWidth="982.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.appointmentsController">
+   <children>
+      <TabPane layoutX="8.0" layoutY="51.0" prefHeight="393.0" prefWidth="961.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab text="All Appointments">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="482.0" prefWidth="860.0">
+                     <children>
+                        <TableView fx:id="AllAppointmentsTable" prefHeight="366.0" prefWidth="965.0">
+                          <columns>
+                            <TableColumn fx:id="AllAppIDCol" prefWidth="53.0" text="AppID" />
+                            <TableColumn fx:id="AllTitleCol" prefWidth="96.0" text="Title" />
+                              <TableColumn fx:id="AllDescriptionCol" prefWidth="127.0" text="Description" />
+                              <TableColumn fx:id="AllLocationCol" prefWidth="129.0" text="Location" />
+                              <TableColumn fx:id="AllContactCol" prefWidth="101.0" text="Contact" />
+                              <TableColumn fx:id="AllTypeCol" prefWidth="117.0" text="Type" />
+                              <TableColumn fx:id="AllStartDateTime" prefWidth="124.0" text="Start Date/Time" />
+                              <TableColumn fx:id="AllEndDateTime" prefWidth="124.0" text="End Date/Time" />
+                              <TableColumn fx:id="AllCusID" prefWidth="47.0" text="CusID" />
+                              <TableColumn fx:id="AllUserID" prefWidth="47.0" text="UserID" />
+                          </columns>
+                        </TableView>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+          <Tab text="Weekly">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="482.0" prefWidth="860.0">
+                     <children>
+                        <TableView fx:id="WeeklyAppointmentsTable" prefHeight="366.0" prefWidth="965.0">
+                          <columns>
+                              <TableColumn fx:id="WeeklyAppIDCol" prefWidth="53.0" text="AppID" />
+                              <TableColumn fx:id="WeeklyTitleCol" prefWidth="96.0" text="Title" />
+                              <TableColumn fx:id="WeeklyDescriptionCol" prefWidth="127.0" text="Description" />
+                              <TableColumn fx:id="WeeklyLocationCol" prefWidth="129.0" text="Location" />
+                              <TableColumn fx:id="WeeklyContactCol" prefWidth="101.0" text="Contact" />
+                              <TableColumn fx:id="WeeklyTypeCol" prefWidth="117.0" text="Type" />
+                              <TableColumn fx:id="WeeklyStartDateTime" prefWidth="124.0" text="Start Date/Time" />
+                              <TableColumn fx:id="WeeklyEndDateTime" prefWidth="124.0" text="End Date/Time" />
+                              <TableColumn fx:id="WeeklyCusID" prefWidth="47.0" text="CusID" />
+                              <TableColumn fx:id="WeeklyUserID" prefWidth="47.0" text="UserID" />
+                          </columns>
+                        </TableView>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+            <Tab text="Monthly">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="482.0" prefWidth="860.0">
+                     <children>
+                        <TableView fx:id="MonthlyAppointmentsTable" prefHeight="366.0" prefWidth="965.0">
+                          <columns>
+                              <TableColumn fx:id="MonthlyAppIDCol" prefWidth="53.0" text="AppID" />
+                              <TableColumn fx:id="MonthlyTitleCol" prefWidth="96.0" text="Title" />
+                              <TableColumn fx:id="MonthlyDescriptionCol" prefWidth="127.0" text="Description" />
+                              <TableColumn fx:id="MonthlyLocationCol" prefWidth="129.0" text="Location" />
+                              <TableColumn fx:id="MonthlyContactCol" prefWidth="101.0" text="Contact" />
+                              <TableColumn fx:id="MonthlyTypeCol" prefWidth="117.0" text="Type" />
+                              <TableColumn fx:id="MonthlyStartDateTime" prefWidth="124.0" text="Start Date/Time" />
+                              <TableColumn fx:id="MonthlyEndDateTime" prefWidth="124.0" text="End Date/Time" />
+                              <TableColumn fx:id="MonthlyCusID" prefWidth="47.0" text="CusID" />
+                              <TableColumn fx:id="MonthlyUserID" prefWidth="47.0" text="UserID" />
+                          </columns>
+                        </TableView>
+                     </children></AnchorPane>
+              </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+      <Button fx:id="AddAppointment" layoutX="27.0" layoutY="455.0" mnemonicParsing="false" onAction="#onAddAppointment" text="Add Appointment" />
+      <Button fx:id="DeleteAppointment" layoutX="155.0" layoutY="455.0" mnemonicParsing="false" onAction="#onDeleteAppointment" text="Delete Appointment" />
+      <Button fx:id="CustomersButton" layoutX="873.0" layoutY="455.0" mnemonicParsing="false" onAction="#onCustomersClick" text="Customers">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>

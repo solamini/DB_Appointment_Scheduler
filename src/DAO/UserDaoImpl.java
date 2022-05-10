@@ -1,5 +1,8 @@
 package DAO;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import model.Customer;
 import model.User;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,10 +21,44 @@ public class UserDaoImpl {
             String userNameA = result.getString("User_Name");
             String password = result.getString("Password");
             userResult = new User(userId, userName, password);
-            //System.out.println(userResult.getUserName() + " " + userResult.getPassword());
             return userResult;
         }
         return userResult;
+    }
+
+    public static User getUser(int userID) throws SQLException{
+        User userResult = new User();
+
+        JDBC.getConnection();
+        String sqlStmt = "SELECT * FROM users WHERE User_ID = '" + userID + "'";
+        Query.makeQuery(sqlStmt);
+        ResultSet result = Query.getResult();
+        if(result.next()) {
+            int userId = result.getInt("User_ID");
+            String userNameA = result.getString("User_Name");
+            String password = result.getString("Password");
+            userResult = new User(userId, userNameA, password);
+            return userResult;
+        }
+        return userResult;
+    }
+
+    public static ObservableList<User> getAllUsers() throws SQLException{
+        ObservableList<User> userList = FXCollections.observableArrayList();
+
+        JDBC.getConnection();
+        String sqlStmt = "SELECT * FROM users";
+        Query.makeQuery(sqlStmt);
+        ResultSet result = Query.getResult();
+        while(result.next()) {
+            int userId = result.getInt("User_ID");
+            String userNameA = result.getString("User_Name");
+            String password = result.getString("Password");
+            User userResult = new User(userId, userNameA, password);
+            userList.add(userResult);
+
+        }
+        return userList;
     }
 
 

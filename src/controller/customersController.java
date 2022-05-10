@@ -5,15 +5,21 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 import main.TimeZoneHelper;
 import model.Country;
 import model.Customer;
 import model.FLDivision;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -113,7 +119,6 @@ public class customersController implements Initializable {
                 String cusPostal = PostalText.getText();
                 String cusPhoneNum = PhoneNumberText.getText();
                 int cusDivision = FLDivisionDaoImpl.getFLDivision(String.valueOf(StateCombo.getValue())).getDivID();
-                //LocalDateTime createdDateTime = TimeZoneHelper.LocalToUTCTimestamp().toLocalDateTime();
                 Timestamp createdTimeStamp = TimeZoneHelper.LocalToUTCTimestamp();
                 String userName = loginController.loggedInUser.getUserName();
 
@@ -212,7 +217,12 @@ public class customersController implements Initializable {
         clearAllFields();
     }
 
-    public void onAppointmentsClick(ActionEvent actionEvent) {
+    public void onAppointmentsClick(ActionEvent actionEvent) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("/view/appointments.fxml"));
+        Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+        stage.setTitle("Appointments");
+        stage.setScene(new Scene(root, 975, 500));
+        stage.show();
     }
 
     public void onMouseClickedOnTable(MouseEvent mouseEvent) {
