@@ -1,8 +1,5 @@
 package controller;
 
-import DAO.CustomerDaoImpl;
-import DAO.FLDivisionDaoImpl;
-import DAO.JDBC;
 import DAO.Query;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -13,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import main.TimeZoneHelper;
+import model.Appointment;
 import model.Contact;
 import model.Customer;
 import model.User;
@@ -22,11 +20,9 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
-public class addAppointmentController implements Initializable {
-
+public class updateAppointmentController implements Initializable {
 
     public TextField TitleTextField;
     public TextField DescriptionTextField;
@@ -45,19 +41,41 @@ public class addAppointmentController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        Appointment currentAppointment = appointmentsController.getCurrentAppointment();
 
+        AppIDLabel.setText(String.valueOf(currentAppointment.getAppID()));
+        TitleTextField.setText(currentAppointment.getAppTitle());
+        DescriptionTextField.setText(currentAppointment.getAppDescription());
+        LocationTextField.setText(currentAppointment.getAppLocation());
+        TypeTextField.setText(currentAppointment.getAppType());
         try {
-            AppIDLabel.setText(String.valueOf(DAO.AppointmentDaoImpl.generateAppointmentId()));
             ContactCombo.setItems(DAO.ContactDaoImpl.getAllContacts());
             CustomerCombo.setItems(DAO.CustomerDaoImpl.getAllCustomers());
             UserCombo.setItems(DAO.UserDaoImpl.getAllUsers());
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            for(int i =0; i<DAO.CustomerDaoImpl.getAllCustomers().size(); i++) {  //sets the customer combobox to the correct customer ID.
+                if (currentAppointment.getAppCustomer().getCusID() == DAO.CustomerDaoImpl.getAllCustomers().get(i).getCusID()) {
+                    CustomerCombo.getSelectionModel().clearAndSelect(i);
+                }
+            }
+            for(int i =0; i<DAO.UserDaoImpl.getAllUsers().size(); i++) { //sets the user combobox to the correct user ID.
+                if (currentAppointment.getAppUser().getUserId() == DAO.UserDaoImpl.getAllUsers().get(i).getUserId()) {
+                    UserCombo.getSelectionModel().clearAndSelect(i);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        ContactCombo.getSelectionModel().clearAndSelect(currentAppointment.getAppContact().getContactID()-1);
+        StartDateHourText.setText(main.TimeZoneHelper.HoursFromTimestamp(currentAppointment.getAppStartDate()));
+        StartDateMinuteText.setText(main.TimeZoneHelper.MinutesFromTimestamp(currentAppointment.getAppStartDate()));
+        EndDateHourText.setText(main.TimeZoneHelper.HoursFromTimestamp(currentAppointment.getAppEndDate()));
+        EndDateMinuteText.setText(main.TimeZoneHelper.MinutesFromTimestamp(currentAppointment.getAppEndDate()));
+        StartDatePicker.setValue(currentAppointment.getAppStartDate().toLocalDateTime().toLocalDate());
 
     }
 
-    public void onAppointmentAdd(ActionEvent actionEvent) {
+
+    public void onSaveChangesUpdate(ActionEvent actionEvent) {
         Alert alert;
         try {
             if (TitleTextField.getText().isEmpty() || DescriptionTextField.getText().isEmpty() || LocationTextField.getText().isEmpty() || TypeTextField.getText().isEmpty()) {
@@ -77,25 +95,20 @@ public class addAppointmentController implements Initializable {
                 String appType = TypeTextField.getText();
                 LocalDateTime startLDT = StartDatePicker.getValue().atTime(Integer.valueOf(StartDateHourText.getText()), Integer.valueOf(StartDateMinuteText.getText()));
                 Timestamp startTimeStamp = main.TimeZoneHelper.LocalToUTCTimestamp(Timestamp.valueOf(startLDT));
-                System.out.println("Local start: "+startLDT);
-                System.out.println("UTC start: "+startTimeStamp);
                 LocalDateTime endLDT = StartDatePicker.getValue().atTime(Integer.valueOf(EndDateHourText.getText()), Integer.valueOf(EndDateMinuteText.getText()));
                 Timestamp endTimeStamp = main.TimeZoneHelper.LocalToUTCTimestamp(Timestamp.valueOf(endLDT));
-
                 Timestamp currentTimeStamp = TimeZoneHelper.LocalToUTCTimestamp();
                 User appUser = (User) UserCombo.getSelectionModel().getSelectedItem();
-                String createdByUser = appUser.getUserName();
+                String updatedByUser = appUser.getUserName();
                 Customer appCustomer = (Customer) CustomerCombo.getSelectionModel().getSelectedItem();
                 String appCustomerID = String.valueOf(appCustomer.getCusID());
                 String appUserID = String.valueOf(appUser.getUserId());
                 String contactID = String.valueOf(appContact.getContactID());
 
 
-
-                JDBC.getConnection();
-                String sqlStmt = "INSERT INTO appointments VALUES("+appID+",'"+appTitle+"','"+appDescription+"','"+appLocation+"','"
-                        +appType+"','"+startTimeStamp+"','"+endTimeStamp+"','"+currentTimeStamp+"','"+createdByUser+"','"+currentTimeStamp+"','"
-                        +createdByUser+"',"+appCustomerID+","+appUserID+","+contactID+")";
+                String sqlStmt = "UPDATE appointments SET Title='"+ appTitle + "', Description='" + appDescription + "', Location='" + appLocation
+                        + "', Type='" + appType + "',Start='" + startTimeStamp + "', End='" + endTimeStamp + "', Last_Update='" + currentTimeStamp
+                        + "', Last_Updated_By='"+updatedByUser+"', Customer_ID="+appCustomerID+", User_ID="+appUserID+", Contact_ID="+contactID+" WHERE Appointment_ID="+appID;
 
                 Query.dataManipulateQuery(sqlStmt);
 
@@ -113,7 +126,7 @@ public class addAppointmentController implements Initializable {
         }
     }
 
-    public void onAppointmentAddCancel(ActionEvent actionEvent) throws IOException {
+    public void onAppointmentUpdateCancel(ActionEvent actionEvent) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/view/appointments.fxml"));
         Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         stage.setTitle("Appointments");

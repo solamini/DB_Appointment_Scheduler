@@ -61,9 +61,9 @@ public class customersController implements Initializable {
     private static Customer currentCustomer = null;
 
 
-    public static Customer getCurrentCustomer() {
-        return currentCustomer;
-    }
+    //public static Customer getCurrentCustomer() {
+        //return currentCustomer;
+    //}
 
     ObservableList<Customer> customersTableList = FXCollections.observableArrayList();
 
@@ -132,7 +132,6 @@ public class customersController implements Initializable {
 
                 Query.dataManipulateQuery(sqlStmt);
 
-                //System.out.println("INSERT INTO customers VALUES("+cusID+",'"+cusName+"','"+cusAddress+"','"+cusPostal+"','"+cusPhoneNum+"','"+createdTimeStamp+"','"+"Alex Created"+"','"+createdTimeStamp+"','"+"Alex Updated"+"',"+cusDivision+")");
                 clearAllFields();
             }
 

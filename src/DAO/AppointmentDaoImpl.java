@@ -64,9 +64,10 @@ public class AppointmentDaoImpl {
             String appType = result.getString("Type");
             String appStartDateString = result.getString("Start");
             String appEndDateString = result.getString("End");
-            //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            Timestamp appStartDateTS = Timestamp.valueOf(appStartDateString);
-            Timestamp appEndDateTS = Timestamp.valueOf(appEndDateString);
+            //Timestamp appStartDateTSLocal = main.TimeZoneHelper.UTCToLocalTimestamp(Timestamp.valueOf(appStartDateString));
+            //Timestamp appEndDateTSLocal = main.TimeZoneHelper.UTCToLocalTimestamp(Timestamp.valueOf(appEndDateString));
+            Timestamp appStartDateTSLocal = Timestamp.valueOf(appStartDateString);
+            Timestamp appEndDateTSLocal = Timestamp.valueOf(appEndDateString);
             int cusId = result.getInt("Customer_ID");
             int userId = result.getInt("User_ID");
             int contactId = result.getInt("Contact_ID");
@@ -75,11 +76,83 @@ public class AppointmentDaoImpl {
             User appUser = DAO.UserDaoImpl.getUser(userId);
             Contact appContact = DAO.ContactDaoImpl.getContact(contactId);
 
-            Appointment appResult = new Appointment(appId, appTitle, appDescription, appLocation, appType, appStartDateTS, appEndDateTS, appCustomer, appUser, appContact);
+            Appointment appResult = new Appointment(appId, appTitle, appDescription, appLocation, appType, appStartDateTSLocal, appEndDateTSLocal, appCustomer, appUser, appContact);
             appList.add(appResult);
         }
         return appList;
     }
+
+    public static ObservableList<Appointment> getWeeklyAppointments() throws SQLException {
+        ObservableList<Appointment> appList = FXCollections.observableArrayList();
+        Timestamp currentTS = new Timestamp(System.currentTimeMillis());
+
+        JDBC.getConnection();
+        String sqlStmt = "SELECT * FROM appointments WHERE start BETWEEN '"+currentTS+"' AND '"+main.TimeZoneHelper.TimestampPlus7Days(currentTS)+"'";
+
+        Query.makeQuery(sqlStmt);
+        ResultSet result = Query.getResult();
+        while (result.next()) {
+            int appId = result.getInt("Appointment_ID");
+            String appTitle = result.getString("Title");
+            String appDescription = result.getString("Description");
+            String appLocation = result.getString("Location");
+            String appType = result.getString("Type");
+            String appStartDateString = result.getString("Start");
+            String appEndDateString = result.getString("End");
+            //Timestamp appStartDateTSLocal = main.TimeZoneHelper.UTCToLocalTimestamp(Timestamp.valueOf(appStartDateString));
+            //Timestamp appEndDateTSLocal = main.TimeZoneHelper.UTCToLocalTimestamp(Timestamp.valueOf(appEndDateString));
+            Timestamp appStartDateTSLocal = Timestamp.valueOf(appStartDateString);
+            Timestamp appEndDateTSLocal = Timestamp.valueOf(appEndDateString);
+            int cusId = result.getInt("Customer_ID");
+            int userId = result.getInt("User_ID");
+            int contactId = result.getInt("Contact_ID");
+
+            Customer appCustomer = DAO.CustomerDaoImpl.getCustomer(cusId);
+            User appUser = DAO.UserDaoImpl.getUser(userId);
+            Contact appContact = DAO.ContactDaoImpl.getContact(contactId);
+
+            Appointment appResult = new Appointment(appId, appTitle, appDescription, appLocation, appType, appStartDateTSLocal, appEndDateTSLocal, appCustomer, appUser, appContact);
+            appList.add(appResult);
+            main.TimeZoneHelper.TimestampPlus7Days(appResult.getAppStartDate());
+        }
+        return appList;
+    }
+
+    public static ObservableList<Appointment> getMonthlyAppointments() throws SQLException {
+        ObservableList<Appointment> appList = FXCollections.observableArrayList();
+
+        JDBC.getConnection();
+        String sqlStmt = "SELECT * FROM appointments WHERE start BETWEEN '"+main.TimeZoneHelper.FirstDayOfMonthTS()+"' AND '"+main.TimeZoneHelper.LastDayOfMonthTS()+"'";
+
+        Query.makeQuery(sqlStmt);
+        ResultSet result = Query.getResult();
+        while (result.next()) {
+            int appId = result.getInt("Appointment_ID");
+            String appTitle = result.getString("Title");
+            String appDescription = result.getString("Description");
+            String appLocation = result.getString("Location");
+            String appType = result.getString("Type");
+            String appStartDateString = result.getString("Start");
+            String appEndDateString = result.getString("End");
+            //Timestamp appStartDateTSLocal = main.TimeZoneHelper.UTCToLocalTimestamp(Timestamp.valueOf(appStartDateString));
+            //Timestamp appEndDateTSLocal = main.TimeZoneHelper.UTCToLocalTimestamp(Timestamp.valueOf(appEndDateString));
+            Timestamp appStartDateTSLocal = Timestamp.valueOf(appStartDateString);
+            Timestamp appEndDateTSLocal = Timestamp.valueOf(appEndDateString);
+            int cusId = result.getInt("Customer_ID");
+            int userId = result.getInt("User_ID");
+            int contactId = result.getInt("Contact_ID");
+
+            Customer appCustomer = DAO.CustomerDaoImpl.getCustomer(cusId);
+            User appUser = DAO.UserDaoImpl.getUser(userId);
+            Contact appContact = DAO.ContactDaoImpl.getContact(contactId);
+
+            Appointment appResult = new Appointment(appId, appTitle, appDescription, appLocation, appType, appStartDateTSLocal, appEndDateTSLocal, appCustomer, appUser, appContact);
+            appList.add(appResult);
+            main.TimeZoneHelper.TimestampPlus7Days(appResult.getAppStartDate());
+        }
+        return appList;
+    }
+
 
     public static int generateAppointmentId() throws SQLException {
         int newId = 0;

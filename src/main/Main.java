@@ -29,8 +29,6 @@ public class Main extends Application {
 	// write your code here
         launch(args);
 
-        //System.out.println(TimeZoneHelper.LocalToUTCTimestamp());
-        //System.out.println(TimeZoneHelper.UTCToLocalTimestamp(TimeZoneHelper.LocalToUTCTimestamp()));
 
 
         JDBC.closeConnection();
