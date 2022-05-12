@@ -3,13 +3,21 @@ package DAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.Customer;
-import model.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
+/** This class gets a connection with the database and uses various methods to query the database.
+ * This class queries the database for data on Customers. */
 public class CustomerDaoImpl {
+
+    /**
+     * Used to query the database and return a Customer based on the customer ID.
+     * This connects to the database, pulls data, and creates a Customer Object.
+     *
+     * @param cusID
+     * @return Customer object
+     */
     public static Customer getCustomer(int cusID) throws SQLException {
         Customer customerResult = new Customer();
 
@@ -30,7 +38,11 @@ public class CustomerDaoImpl {
         return customerResult;
     }
 
-
+    /**
+     * Used to query the database and return All Customers in the database.
+     * This connects to the database, pulls data, creates Customer Objects, and puts them into an observable list.
+     * @return List of all Customer Objects
+     */
     public static ObservableList<Customer> getAllCustomers() throws SQLException {
         ObservableList<Customer> customerList = FXCollections.observableArrayList();
 
@@ -52,20 +64,4 @@ public class CustomerDaoImpl {
         return customerList;
     }
 
-    public static int generateCustomerId() throws SQLException {
-        int newId = 0;
-        ObservableList<Customer> allCustomers = getAllCustomers();
-        ArrayList<Integer> idNumbers = new ArrayList<Integer>();
-
-        for (Customer c : allCustomers) {
-            idNumbers.add(c.getCusID());
-        }
-        for (int i = 1; i < (allCustomers.size() * 2) ; i++) { //checks if any ID number starting from 1 is available to be used
-            if(!idNumbers.contains(i)) {
-                newId = i; //assigns i to the newId number if i does not have an ID assigned to it already.
-                break; //ends the for loop when newId gets assigned i
-            }
-        }
-        return newId;
-    }
 }

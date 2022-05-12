@@ -20,8 +20,10 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ResourceBundle;
 
+/** This is a controller for the updateAppointment.fxml file. */
 public class updateAppointmentController implements Initializable {
 
     public TextField TitleTextField;
@@ -39,6 +41,9 @@ public class updateAppointmentController implements Initializable {
     public DatePicker StartDatePicker;
 
 
+    /** On initializing it takes the selected Appointment and fills the inputs on the page with that information.
+     * @param url
+     * @param resourceBundle */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Appointment currentAppointment = appointmentsController.getCurrentAppointment();
@@ -75,6 +80,10 @@ public class updateAppointmentController implements Initializable {
     }
 
 
+    /** Takes all inputs and updates them with an Appointment in the database.
+     * Takes all of the user input and checks for any blanks. If no blanks, it checks if the appointment time is within business hours,
+     * and that it doesnt overlap with other appointments. If all info is valid, it updates the appointment into the database.
+     * @param actionEvent */
     public void onSaveChangesUpdate(ActionEvent actionEvent) {
         Alert alert;
         try {
@@ -97,6 +106,9 @@ public class updateAppointmentController implements Initializable {
                 Timestamp startTimeStamp = main.TimeZoneHelper.LocalToUTCTimestamp(Timestamp.valueOf(startLDT));
                 LocalDateTime endLDT = StartDatePicker.getValue().atTime(Integer.valueOf(EndDateHourText.getText()), Integer.valueOf(EndDateMinuteText.getText()));
                 Timestamp endTimeStamp = main.TimeZoneHelper.LocalToUTCTimestamp(Timestamp.valueOf(endLDT));
+                Timestamp ESTStartTimeStamp = main.TimeZoneHelper.LocalToESTTimestamp(Timestamp.valueOf(startLDT));
+                Timestamp ESTEndTimeStamp = main.TimeZoneHelper.LocalToESTTimestamp(Timestamp.valueOf(endLDT));
+
                 Timestamp currentTimeStamp = TimeZoneHelper.LocalToUTCTimestamp();
                 User appUser = (User) UserCombo.getSelectionModel().getSelectedItem();
                 String updatedByUser = appUser.getUserName();
@@ -105,18 +117,49 @@ public class updateAppointmentController implements Initializable {
                 String appUserID = String.valueOf(appUser.getUserId());
                 String contactID = String.valueOf(appContact.getContactID());
 
+                Boolean goodAppointmentTime = true;
+                LocalTime openLocalTime = LocalTime.of(8,0);
+                LocalTime closeLocalTime = LocalTime.of(22, 0);
+                LocalTime ESTAppStartTime = ESTStartTimeStamp.toLocalDateTime().toLocalTime();
+                LocalTime ESTAppEndTime = ESTEndTimeStamp.toLocalDateTime().toLocalTime();
 
-                String sqlStmt = "UPDATE appointments SET Title='"+ appTitle + "', Description='" + appDescription + "', Location='" + appLocation
-                        + "', Type='" + appType + "',Start='" + startTimeStamp + "', End='" + endTimeStamp + "', Last_Update='" + currentTimeStamp
-                        + "', Last_Updated_By='"+updatedByUser+"', Customer_ID="+appCustomerID+", User_ID="+appUserID+", Contact_ID="+contactID+" WHERE Appointment_ID="+appID;
 
-                Query.dataManipulateQuery(sqlStmt);
+                if(ESTAppStartTime.isBefore(openLocalTime) || ESTAppEndTime.isAfter(closeLocalTime)){
+                    goodAppointmentTime = false;
+                    alert = new Alert(Alert.AlertType.WARNING, "Please choose an appointment time that is within business hours.");
+                    alert.show();
+                } else { //if the appointment time is within business hours, it continues to check for overlaps.
 
-                Parent root = FXMLLoader.load(getClass().getResource("/view/appointments.fxml"));
-                Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-                stage.setTitle("Appointments");
-                stage.setScene(new Scene(root, 975, 500));
-                stage.show();
+                    for (Appointment a : DAO.AppointmentDaoImpl.getAllAppointmentsEST()) {
+
+                        if ((ESTStartTimeStamp.after(a.getAppStartDate()) && ESTStartTimeStamp.before(a.getAppEndDate()))
+                                || (ESTEndTimeStamp.after(a.getAppStartDate()) && ESTEndTimeStamp.before(a.getAppEndDate()))
+                                || (ESTStartTimeStamp.before(a.getAppStartDate()) && ESTEndTimeStamp.after(a.getAppEndDate()))
+                                || ESTStartTimeStamp.equals(a.getAppStartDate()) || ESTEndTimeStamp.equals(a.getAppEndDate())) {
+                            if (a.getAppID() != appID) { //makes sure to not check against its own appointment.
+                                goodAppointmentTime = false;
+                                alert = new Alert(Alert.AlertType.WARNING, "Your appointment time overlaps with another appointment!");
+                                alert.show();
+                                break; //once an overlap is found, exit the for loop.
+                            }
+                        }
+                    }
+                }
+
+
+                if (goodAppointmentTime) {
+                    String sqlStmt = "UPDATE appointments SET Title='" + appTitle + "', Description='" + appDescription + "', Location='" + appLocation
+                            + "', Type='" + appType + "',Start='" + startTimeStamp + "', End='" + endTimeStamp + "', Last_Update='" + currentTimeStamp
+                            + "', Last_Updated_By='" + updatedByUser + "', Customer_ID=" + appCustomerID + ", User_ID=" + appUserID + ", Contact_ID=" + contactID + " WHERE Appointment_ID=" + appID;
+
+                    Query.dataManipulateQuery(sqlStmt);
+
+                    Parent root = FXMLLoader.load(getClass().getResource("/view/appointments.fxml"));
+                    Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+                    stage.setTitle("Appointments");
+                    stage.setScene(new Scene(root, 975, 500));
+                    stage.show();
+                }
             }
         }
         catch (Exception e) {
@@ -126,6 +169,7 @@ public class updateAppointmentController implements Initializable {
         }
     }
 
+    /** When the Cancel button is clicked, takes user back to the appointments screen. */
     public void onAppointmentUpdateCancel(ActionEvent actionEvent) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/view/appointments.fxml"));
         Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();

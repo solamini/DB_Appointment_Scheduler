@@ -83,5 +83,15 @@
          </font>
       </Button>
       <Button fx:id="UpdateAppointment" layoutX="330.0" layoutY="455.0" mnemonicParsing="false" onAction="#onUpdateAppointment" text="Update Appointment" />
+      <Label layoutX="328.0" layoutY="14.0" text="Business Hours: 8am - 10pm EST">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+      <Button fx:id="ReportsButton" layoutX="790.0" layoutY="455.0" mnemonicParsing="false" onAction="#onReportsClicked" text="Reports">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>

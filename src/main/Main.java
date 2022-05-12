@@ -7,12 +7,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.sql.SQLException;
-import java.time.Instant;
 
-
+/** This class launches the application and takes it to the login screen.*/
 public class Main extends Application {
 
+    /** This method launches the login screen.
+     * @param primaryStage */
     @Override
     public void start(Stage primaryStage) throws Exception {
 
@@ -24,8 +24,8 @@ public class Main extends Application {
         JDBC.openConnection();
 
     }
-
-    public static void main(String[] args) throws SQLException {
+    /** This is the main method. */
+    public static void main(String[] args) {
 	// write your code here
         launch(args);
 

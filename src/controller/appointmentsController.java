@@ -14,7 +14,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import model.Appointment;
-import model.Customer;
+
 
 import java.io.IOException;
 import java.net.URL;
@@ -22,6 +22,7 @@ import java.sql.SQLException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+/** This is a controller for the appointment.fxml file. */
 public class appointmentsController implements Initializable {
 
 
@@ -57,6 +58,7 @@ public class appointmentsController implements Initializable {
     public Button AddAppointment;
     public Button DeleteAppointment;
     public Button UpdateAppointment;
+    public Button CustomersButton;
 
     ObservableList<Appointment> appointmentsTableList = FXCollections.observableArrayList();
 
@@ -71,15 +73,17 @@ public class appointmentsController implements Initializable {
     public TableColumn AllCusID;
     public TableColumn AllUserID;
 
-    private static Appointment currentAppointment = null;
+    private static Appointment currentAppointment = null; //the Appointment object to be passed to other screens when needed.
     public static Appointment getCurrentAppointment(){
         return currentAppointment;
     }
 
 
+    /** Initializes and sets All Appointments table to fill with all appointments in the database.
+     * @param url
+     * @param resourceBundle */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
 
         AllAppIDCol.setCellValueFactory(new PropertyValueFactory<>("appID"));
         AllTitleCol.setCellValueFactory(new PropertyValueFactory<>("appTitle"));
@@ -102,6 +106,8 @@ public class appointmentsController implements Initializable {
 
     }
 
+    /** When the Add Appointment button is clicked, takes user to the add Appointments screen.
+     * @param actionEvent */
     public void onAddAppointment(ActionEvent actionEvent) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/view/addAppointment.fxml"));
         Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
@@ -110,13 +116,15 @@ public class appointmentsController implements Initializable {
         stage.show();
     }
 
+    /** Deletes selected appointment after confirming first with an alert.
+     * @param actionEvent */
     public void onDeleteAppointment(ActionEvent actionEvent) {
         JDBC.getConnection();
         try {
             currentAppointment = AllAppointmentsTable.getSelectionModel().getSelectedItem();
             String appID = String.valueOf(currentAppointment.getAppID());
             String sqlStmt = "DELETE FROM appointments WHERE Appointment_ID = '"+appID+"'";
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"Are you sure you want to delete the selected item?");
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"Are you sure you want to delete the "+currentAppointment.getAppType()+" appointment, with the ID of "+currentAppointment.getAppID());
             alert.setTitle("Appointment");
             alert.setHeaderText("Delete");
 
@@ -132,9 +140,14 @@ public class appointmentsController implements Initializable {
                 alert2.show();
             }
         }
-        catch (Exception e){}
+        catch (Exception e){
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please select the appointment you want to cancel.");
+            alert.show();
+        }
     }
 
+    /** When the Customers button is clicked, takes user to the Customers screen.
+     * @param actionEvent */
     public void onCustomersClick(ActionEvent actionEvent) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/view/customers.fxml"));
         Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
@@ -143,16 +156,26 @@ public class appointmentsController implements Initializable {
         stage.show();
     }
 
+    /** When the Update Appointment button is clicked, takes user to the Update Appointments screen.
+     * @param actionEvent */
     public void onUpdateAppointment(ActionEvent actionEvent) throws IOException {
-        currentAppointment = AllAppointmentsTable.getSelectionModel().getSelectedItem();
+        try {
+            currentAppointment = AllAppointmentsTable.getSelectionModel().getSelectedItem();
 
-        Parent root = FXMLLoader.load(getClass().getResource("/view/updateAppointment.fxml"));
-        Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-        stage.setTitle("Update Appointment");
-        stage.setScene(new Scene(root, 425, 425));
-        stage.show();
+            Parent root = FXMLLoader.load(getClass().getResource("/view/updateAppointment.fxml"));
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            stage.setTitle("Update Appointment");
+            stage.setScene(new Scene(root, 425, 425));
+            stage.show();
+        }
+        catch(Exception e){
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please select an appointment to update.");
+            alert.show();
+        }
     }
 
+    /** Sets the table to hold all the appointments in the next seven days and fills the table.
+     * @param event */
     public void onWeeklyTabSelected(Event event) {
         if(!AllAppTab.isSelected()){
             AddAppointment.setVisible(false);
@@ -181,6 +204,8 @@ public class appointmentsController implements Initializable {
         }
     }
 
+    /** Sets the table to hold all the appointments in the current month and fills the table.
+     * @param event */
     public void onMonthlyTabSelected(Event event) {
         if(!AllAppTab.isSelected()){
             AddAppointment.setVisible(false);
@@ -208,7 +233,8 @@ public class appointmentsController implements Initializable {
         }
 
     }
-
+    /** Sets buttons to be visible when the All Appointments tab is selected.
+     * @param event */
     public void onAllAppTabSelected(Event event) {
         try {
             if (AllAppTab.isSelected()) {
@@ -218,5 +244,15 @@ public class appointmentsController implements Initializable {
             }
         }
         catch(Exception e){}
+    }
+
+    /** When the Reports button is clicked, takes user to the Reports screen.
+     * @param actionEvent */
+    public void onReportsClicked(ActionEvent actionEvent) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("/view/reports.fxml"));
+        Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+        stage.setTitle("Reports");
+        stage.setScene(new Scene(root, 975, 500));
+        stage.show();
     }
 }

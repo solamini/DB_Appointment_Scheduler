@@ -3,13 +3,18 @@ package DAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.Contact;
-import model.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/** This class gets a connection with the database and uses various methods to query the database.
+ * This class queries the database for data on Contacts. */
 public class ContactDaoImpl {
 
+    /** Used to query the database and return a Contact based on the contact ID.
+     * This connects to the database, pulls data, and creates a Contact Object.
+     * @param contactID
+     * @return Contact object */
     public static Contact getContact(int contactID) throws SQLException {
         Contact contactResult = new Contact();
 
@@ -27,6 +32,9 @@ public class ContactDaoImpl {
         return contactResult;
     }
 
+    /** Used to query the database and return All contacts in the database.
+     * This connects to the database, pulls data, creates contact Objects, and puts them into an observable list.
+     * @return List of all Contact Objects */
     public static ObservableList<Contact> getAllContacts() throws SQLException{
         ObservableList<Contact> contactList = FXCollections.observableArrayList();
 

@@ -3,12 +3,18 @@ package DAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.Country;
-import model.Customer;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/** This class gets a connection with the database and uses various methods to query the database.
+ * This class queries the database for data on Countries. */
 public class CountryDaoImpl {
+
+    /** Used to query the database and return a Country based on the country ID.
+     * This connects to the database, pulls data, and creates a Country Object.
+     * @param countryID
+     * @return Country object */
     public static Country getCountry(int countryID) throws SQLException {
         Country countryResult = new Country();
 
@@ -25,6 +31,9 @@ public class CountryDaoImpl {
         return countryResult;
     }
 
+    /** Used to query the database and return All Countries in the database.
+     * This connects to the database, pulls data, creates Country Objects, and puts them into an observable list.
+     * @return List of all Country Objects */
     public static ObservableList<Country> getAllCountries() throws SQLException {
         ObservableList<Country> countriesList = FXCollections.observableArrayList();
 

@@ -23,28 +23,23 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+/** Interface declared to use a lambda expression in the following code. */
+interface GetCustomerID {
+    int getUnusedCusID() throws SQLException;
+}
+
+/** This is a controller for the customers.fxml file. */
 public class customersController implements Initializable {
 
-    @FXML
     public TableColumn CustomerID;
-
-    @FXML
     public TableColumn CustomerName;
-
-    @FXML
     public TableColumn CustomerAddress;
-
-    @FXML
     public TableColumn CustomerZip;
-
-    @FXML
     public TableColumn CustomerPhoneNum;
-
-    @FXML
     public TableView<Customer> CustomerTable;
 
     public Label CusIDLabel;
@@ -57,16 +52,13 @@ public class customersController implements Initializable {
     public ComboBox CountryCombo;
     public ComboBox StateCombo;
 
-
     private static Customer currentCustomer = null;
-
-
-    //public static Customer getCurrentCustomer() {
-        //return currentCustomer;
-    //}
 
     ObservableList<Customer> customersTableList = FXCollections.observableArrayList();
 
+    /** Initializes and sets the Customer table to fill with all customers.
+     * @param url
+     * @param resourceBundle */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -87,6 +79,8 @@ public class customersController implements Initializable {
             e.printStackTrace();
         }
     }
+
+    /** Clears all fields in the customer screen. */
     private void clearAllFields () {
         CusIDLabel.setText("");
         FirstNameText.clear();
@@ -96,9 +90,29 @@ public class customersController implements Initializable {
         PhoneNumberText.clear();
         CountryCombo.getSelectionModel().clearSelection();
         StateCombo.getSelectionModel().clearSelection();
+        StateCombo.setItems(null);
     }
 
+    /** Takes all inputs and converts them to a Customer in the database.
+     * Takes all of the user input and checks for any blanks. If no blanks, and all info is valid, it adds the customer into the database.
+     * @param actionEvent */
     public void onAddClick(ActionEvent actionEvent) {
+        //Used Lambda to create unused customer ID when adding the customer to the database. Goes through all the current customer ID's and returns the next available number.
+        GetCustomerID number = () -> {
+            int newId = 0;
+            ObservableList<Customer> allCustomers = DAO.CustomerDaoImpl.getAllCustomers();
+            ArrayList<Integer> idNumbers = new ArrayList<Integer>();
+            for (Customer c : allCustomers) {
+                idNumbers.add(c.getCusID()); }
+
+            for (int i = 1; i < (allCustomers.size() * 2) ; i++) {
+                if(!idNumbers.contains(i)) {
+                    newId = i;
+                    break; } }
+
+            return newId;
+        };
+
         Alert alert;
         try {
             if(FirstNameText.getText().isEmpty() || LastNameText.getText().isEmpty() || AddressText.getText().isEmpty() || PostalText.getText().isEmpty()
@@ -113,7 +127,7 @@ public class customersController implements Initializable {
                 alert.show();
             }
             else {
-                int cusID = CustomerDaoImpl.generateCustomerId();
+                int cusID = number.getUnusedCusID();
                 String cusName = FirstNameText.getText() + " " + LastNameText.getText();
                 String cusAddress = AddressText.getText();
                 String cusPostal = PostalText.getText();
@@ -142,6 +156,9 @@ public class customersController implements Initializable {
         }
     }
 
+    /** Takes all inputs and updates them to that Customer in the database.
+     * Takes all of the user input and checks for any blanks. If no blanks, and all info is valid, it updates the customer in the database.
+     * @param actionEvent */
     public void onUpdateClick(ActionEvent actionEvent) {
         Alert alert;
         try {
@@ -187,35 +204,52 @@ public class customersController implements Initializable {
         }
     }
 
+    /** Takes selected customer and deletes it.
+     * If a customer has no appointments and after the user confirms the prompt that asks if they wish to delete, it deletes the customer.
+     * @param actionEvent */
     public void onDeleteClick(ActionEvent actionEvent) {
         JDBC.getConnection();
         try {
             String cusID = CusIDLabel.getText();
-            String sqlStmt = "DELETE FROM customers WHERE Customer_ID = '"+cusID+"'";
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"Are you sure you want to delete the selected item?");
-            alert.setTitle("Customer");
-            alert.setHeaderText("Delete");
+            if (!cusID.isEmpty()) {
+                String sqlStmt = "DELETE FROM customers WHERE Customer_ID = '" + cusID + "'";
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete the selected item?");
+                alert.setTitle("Customer");
+                alert.setHeaderText("Delete");
 
-            Optional<ButtonType> result = alert.showAndWait();
-            if(result.isPresent() && result.get() == ButtonType.OK) {
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.isPresent() && result.get() == ButtonType.OK) {
+                    int cusIDAppointments = DAO.AppointmentDaoImpl.getAllCustomerAppointments(currentCustomer.getCusID()).size();
+                    if(cusIDAppointments == 0) {
+                        Query.dataManipulateQuery(sqlStmt);
 
-                Query.dataManipulateQuery(sqlStmt);
+                        customersTableList = CustomerDaoImpl.getAllCustomers();
+                        CustomerTable.setItems(customersTableList);
 
-                customersTableList = CustomerDaoImpl.getAllCustomers();
-                CustomerTable.setItems(customersTableList);
-
-                Alert alert2 = new Alert(Alert.AlertType.INFORMATION, "You have deleted the customer.");
-                alert2.show();
+                        Alert alert2 = new Alert(Alert.AlertType.INFORMATION, "You have deleted the customer.");
+                        alert2.show();
+                    } else {
+                        Alert alert2 = new Alert(Alert.AlertType.ERROR, "You must first delete any associated appointments with this customer.");
+                        alert2.show();
+                    }
+                }
+            }
+            if(cusID.isEmpty()){
+                Alert alert3 = new Alert(Alert.AlertType.ERROR, "Please select the customer to delete.");
+                alert3.show();
             }
         }
         catch (Exception e){}
 
     }
 
+    /** Clears all fields if user clicks on the 'Clear' button. */
     public void onClearClick(ActionEvent actionEvent) {
         clearAllFields();
     }
 
+    /** When the Appointments button is clicked, takes user to the appointments screen.
+     * @param actionEvent */
     public void onAppointmentsClick(ActionEvent actionEvent) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/view/appointments.fxml"));
         Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
@@ -224,6 +258,8 @@ public class customersController implements Initializable {
         stage.show();
     }
 
+    /** Sets all inputs to the values of the customer that user clicks on in the table.
+     * @param mouseEvent */
     public void onMouseClickedOnTable(MouseEvent mouseEvent) {
         try {
             currentCustomer = CustomerTable.getSelectionModel().getSelectedItem();
@@ -250,6 +286,8 @@ public class customersController implements Initializable {
         }
     }
 
+    /** Sets the first-level division when user selects a country from the Country Combo box.
+     * @param actionEvent */
     public void onCountryComboAction(ActionEvent actionEvent) {
         try{
             int countryID = ((Country) CountryCombo.getSelectionModel().getSelectedItem()).getCountryID();

@@ -9,13 +9,17 @@ import model.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Time;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+/** This class gets a connection with the database and uses various methods to query the database.
+ * This class queries the database for data on Appointments. */
 public class AppointmentDaoImpl {
+
+    /** Used to query the database and return an Appointment based on the appointment ID.
+     * This connects to the database, pulls data, and creates an Appointment Object.
+     * @param appID
+     * @return Appointment object */
     public static Appointment getAppointment(int appID) throws SQLException {
         Appointment appResult = new Appointment();
 
@@ -31,7 +35,7 @@ public class AppointmentDaoImpl {
             String appType = result.getString("Type");
             String appStartDateString = result.getString("Start");
             String appEndDateString = result.getString("End");
-            //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
             Timestamp appStartDateTS = Timestamp.valueOf(appStartDateString);
             Timestamp appEndDateTS = Timestamp.valueOf(appEndDateString);
 
@@ -49,6 +53,9 @@ public class AppointmentDaoImpl {
         return appResult;
     }
 
+    /** Used to query the database and returns All Appointments in the database.
+     * This connects to the database, pulls data, creates Appointment Objects, and puts them into an observable list.
+     * @return List of all Appointment Objects */
     public static ObservableList<Appointment> getAllAppointments() throws SQLException {
         ObservableList<Appointment> appList = FXCollections.observableArrayList();
 
@@ -64,10 +71,9 @@ public class AppointmentDaoImpl {
             String appType = result.getString("Type");
             String appStartDateString = result.getString("Start");
             String appEndDateString = result.getString("End");
-            //Timestamp appStartDateTSLocal = main.TimeZoneHelper.UTCToLocalTimestamp(Timestamp.valueOf(appStartDateString));
-            //Timestamp appEndDateTSLocal = main.TimeZoneHelper.UTCToLocalTimestamp(Timestamp.valueOf(appEndDateString));
-            Timestamp appStartDateTSLocal = Timestamp.valueOf(appStartDateString);
-            Timestamp appEndDateTSLocal = Timestamp.valueOf(appEndDateString);
+            Timestamp appStartDateTSLocal = main.TimeZoneHelper.UTCToLocalTimestamp(Timestamp.valueOf(appStartDateString));
+            Timestamp appEndDateTSLocal = main.TimeZoneHelper.UTCToLocalTimestamp(Timestamp.valueOf(appEndDateString));
+
             int cusId = result.getInt("Customer_ID");
             int userId = result.getInt("User_ID");
             int contactId = result.getInt("Contact_ID");
@@ -82,6 +88,43 @@ public class AppointmentDaoImpl {
         return appList;
     }
 
+    /** Used to query the database and returns All Appointments in the database and convert the times to Eastern.
+     * This connects to the database, pulls data, creates Appointment Objects, and puts them into an observable list.
+     * @return List of all Appointment Objects in Eastern Time */
+    public static ObservableList<Appointment> getAllAppointmentsEST() throws SQLException {
+        ObservableList<Appointment> appList = FXCollections.observableArrayList();
+
+        JDBC.getConnection();
+        String sqlStmt = "SELECT * FROM appointments";
+        Query.makeQuery(sqlStmt);
+        ResultSet result = Query.getResult();
+        while (result.next()) {
+            int appId = result.getInt("Appointment_ID");
+            String appTitle = result.getString("Title");
+            String appDescription = result.getString("Description");
+            String appLocation = result.getString("Location");
+            String appType = result.getString("Type");
+            String appStartDateString = result.getString("Start");
+            String appEndDateString = result.getString("End");
+            Timestamp appStartDateTSLocal = main.TimeZoneHelper.UTCToESTTimestamp(Timestamp.valueOf(appStartDateString));
+            Timestamp appEndDateTSLocal = main.TimeZoneHelper.UTCToESTTimestamp(Timestamp.valueOf(appEndDateString));
+            int cusId = result.getInt("Customer_ID");
+            int userId = result.getInt("User_ID");
+            int contactId = result.getInt("Contact_ID");
+
+            Customer appCustomer = DAO.CustomerDaoImpl.getCustomer(cusId);
+            User appUser = DAO.UserDaoImpl.getUser(userId);
+            Contact appContact = DAO.ContactDaoImpl.getContact(contactId);
+
+            Appointment appResult = new Appointment(appId, appTitle, appDescription, appLocation, appType, appStartDateTSLocal, appEndDateTSLocal, appCustomer, appUser, appContact);
+            appList.add(appResult);
+        }
+        return appList;
+    }
+
+    /** Used to query the database and returns all Appointments for the next 7 days in the database.
+     * This connects to the database, pulls data, creates Appointment Objects, and puts then into an observable list.
+     * @return List of all Appointment Objects for the next 7 days */
     public static ObservableList<Appointment> getWeeklyAppointments() throws SQLException {
         ObservableList<Appointment> appList = FXCollections.observableArrayList();
         Timestamp currentTS = new Timestamp(System.currentTimeMillis());
@@ -99,10 +142,8 @@ public class AppointmentDaoImpl {
             String appType = result.getString("Type");
             String appStartDateString = result.getString("Start");
             String appEndDateString = result.getString("End");
-            //Timestamp appStartDateTSLocal = main.TimeZoneHelper.UTCToLocalTimestamp(Timestamp.valueOf(appStartDateString));
-            //Timestamp appEndDateTSLocal = main.TimeZoneHelper.UTCToLocalTimestamp(Timestamp.valueOf(appEndDateString));
-            Timestamp appStartDateTSLocal = Timestamp.valueOf(appStartDateString);
-            Timestamp appEndDateTSLocal = Timestamp.valueOf(appEndDateString);
+            Timestamp appStartDateTSLocal = main.TimeZoneHelper.UTCToLocalTimestamp(Timestamp.valueOf(appStartDateString));
+            Timestamp appEndDateTSLocal = main.TimeZoneHelper.UTCToLocalTimestamp(Timestamp.valueOf(appEndDateString));
             int cusId = result.getInt("Customer_ID");
             int userId = result.getInt("User_ID");
             int contactId = result.getInt("Contact_ID");
@@ -118,6 +159,9 @@ public class AppointmentDaoImpl {
         return appList;
     }
 
+    /** Used to query the database and returns all Appointments in the database for the current month.
+     * This connects to the database, pulls data, creates Appointment Objects, and puts them into an observable list.
+     * @return List of all Appointment Objects for the current month. */
     public static ObservableList<Appointment> getMonthlyAppointments() throws SQLException {
         ObservableList<Appointment> appList = FXCollections.observableArrayList();
 
@@ -134,10 +178,9 @@ public class AppointmentDaoImpl {
             String appType = result.getString("Type");
             String appStartDateString = result.getString("Start");
             String appEndDateString = result.getString("End");
-            //Timestamp appStartDateTSLocal = main.TimeZoneHelper.UTCToLocalTimestamp(Timestamp.valueOf(appStartDateString));
-            //Timestamp appEndDateTSLocal = main.TimeZoneHelper.UTCToLocalTimestamp(Timestamp.valueOf(appEndDateString));
-            Timestamp appStartDateTSLocal = Timestamp.valueOf(appStartDateString);
-            Timestamp appEndDateTSLocal = Timestamp.valueOf(appEndDateString);
+            Timestamp appStartDateTSLocal = main.TimeZoneHelper.UTCToLocalTimestamp(Timestamp.valueOf(appStartDateString));
+            Timestamp appEndDateTSLocal = main.TimeZoneHelper.UTCToLocalTimestamp(Timestamp.valueOf(appEndDateString));
+
             int cusId = result.getInt("Customer_ID");
             int userId = result.getInt("User_ID");
             int contactId = result.getInt("Contact_ID");
@@ -153,7 +196,81 @@ public class AppointmentDaoImpl {
         return appList;
     }
 
+    /** Used to query the database and return an Appointment list based on the contact ID associated with the appointment.
+     * This connects to the database, pulls data, and creates an Appointment Object.
+     * @param contactID
+     * @return Appointment object list */
+    public static ObservableList<Appointment> getAllContactAppointments(int contactID) throws SQLException {
+        ObservableList<Appointment> appList = FXCollections.observableArrayList();
 
+        JDBC.getConnection();
+        String sqlStmt = "SELECT * FROM appointments WHERE Contact_ID ="+contactID;
+        Query.makeQuery(sqlStmt);
+        ResultSet result = Query.getResult();
+        while (result.next()) {
+            int appId = result.getInt("Appointment_ID");
+            String appTitle = result.getString("Title");
+            String appDescription = result.getString("Description");
+            String appLocation = result.getString("Location");
+            String appType = result.getString("Type");
+            String appStartDateString = result.getString("Start");
+            String appEndDateString = result.getString("End");
+            Timestamp appStartDateTSLocal = main.TimeZoneHelper.UTCToLocalTimestamp(Timestamp.valueOf(appStartDateString));
+            Timestamp appEndDateTSLocal = main.TimeZoneHelper.UTCToLocalTimestamp(Timestamp.valueOf(appEndDateString));
+            int cusId = result.getInt("Customer_ID");
+            int userId = result.getInt("User_ID");
+            int contactId = result.getInt("Contact_ID");
+
+            Customer appCustomer = DAO.CustomerDaoImpl.getCustomer(cusId);
+            User appUser = DAO.UserDaoImpl.getUser(userId);
+            Contact appContact = DAO.ContactDaoImpl.getContact(contactId);
+
+            Appointment appResult = new Appointment(appId, appTitle, appDescription, appLocation, appType, appStartDateTSLocal, appEndDateTSLocal, appCustomer, appUser, appContact);
+            appList.add(appResult);
+        }
+        return appList;
+    }
+
+    /** Used to query the database and return an Appointment list based on the customer ID.
+     * This connects to the database, pulls data, and creates an Appointment Object.
+     * @param cusID
+     * @return Appointment object list */
+    public static ObservableList<Appointment> getAllCustomerAppointments(int cusID) throws SQLException {
+        ObservableList<Appointment> appList = FXCollections.observableArrayList();
+
+        JDBC.getConnection();
+        String sqlStmt = "SELECT * FROM appointments WHERE Customer_ID ="+cusID;
+        Query.makeQuery(sqlStmt);
+        ResultSet result = Query.getResult();
+        while (result.next()) {
+            int appId = result.getInt("Appointment_ID");
+            String appTitle = result.getString("Title");
+            String appDescription = result.getString("Description");
+            String appLocation = result.getString("Location");
+            String appType = result.getString("Type");
+            String appStartDateString = result.getString("Start");
+            String appEndDateString = result.getString("End");
+            Timestamp appStartDateTSLocal = main.TimeZoneHelper.UTCToLocalTimestamp(Timestamp.valueOf(appStartDateString));
+            Timestamp appEndDateTSLocal = main.TimeZoneHelper.UTCToLocalTimestamp(Timestamp.valueOf(appEndDateString));
+            int cusId = result.getInt("Customer_ID");
+            int userId = result.getInt("User_ID");
+            int contactId = result.getInt("Contact_ID");
+
+            Customer appCustomer = DAO.CustomerDaoImpl.getCustomer(cusId);
+            User appUser = DAO.UserDaoImpl.getUser(userId);
+            Contact appContact = DAO.ContactDaoImpl.getContact(contactId);
+
+            Appointment appResult = new Appointment(appId, appTitle, appDescription, appLocation, appType, appStartDateTSLocal, appEndDateTSLocal, appCustomer, appUser, appContact);
+            appList.add(appResult);
+        }
+        return appList;
+    }
+
+
+
+    /** Generates an Appointment ID that is not currently being used by any appointment.
+     * Goes through the list of appointment IDs and returns the first ID number available to be used.
+     * @return An integer that is free to be used as an appointment ID. */
     public static int generateAppointmentId() throws SQLException {
         int newId = 0;
         ObservableList<Appointment> allAppointments = getAllAppointments();
