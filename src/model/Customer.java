@@ -1,6 +1,12 @@
 package model;
 
-/** This class creates the Customer object. */
+import DAO.CountryDaoImpl;
+import DAO.FLDivisionDaoImpl;
+
+import java.sql.SQLException;
+
+/** This class creates the Customer object.
+ * @author Aleksandr Ogilba */
 public class Customer {
     private int cusID;
     private String cusName;
@@ -8,24 +14,30 @@ public class Customer {
     private String cusPostal;
     private String cusPhoneNum;
     private int cusDivID;
+    private String cusDivName;
+    private String cusCountry;
 
+    /** This is an Empty Constructor */
     public Customer(){
     }
 
     /** This is a constructor that is used to create a Customer object.
-     * @param cusID
-     * @param cusName
-     * @param cusAddress
-     * @param cusPostal
-     * @param cusPhoneNum
-     * @param cusDivID */
-    public Customer(int cusID, String cusName, String cusAddress, String cusPostal, String cusPhoneNum,int cusDivID){
+     * @param cusID Customer ID
+     * @param cusName Customer Name
+     * @param cusAddress Customer Address
+     * @param cusPostal Customer Postal Code
+     * @param cusPhoneNum Customer Phone Number
+     * @param cusDivID Customer Division ID */
+    public Customer(int cusID, String cusName, String cusAddress, String cusPostal, String cusPhoneNum,int cusDivID) throws SQLException {
         this.cusID = cusID;
         this.cusName = cusName;
         this.cusAddress = cusAddress;
         this.cusPostal = cusPostal;
         this.cusPhoneNum = cusPhoneNum;
         this.cusDivID = cusDivID;
+        this.cusDivName = DAO.FLDivisionDaoImpl.getFLDivision(cusDivID).getDivName();
+        this.cusCountry = CountryDaoImpl.getCountry(FLDivisionDaoImpl.getFLDivision(cusDivID).getCountryID()).getCountryName();
+
     }
 
     /** Returns the customer ID from the Customer object.
@@ -35,7 +47,7 @@ public class Customer {
     }
 
     /** Sets the input customer ID to the Customer object.
-     * @param cusID*/
+     * @param cusID Customer ID */
     public void setCusID(int cusID) {
         this.cusID = cusID;
     }
@@ -47,14 +59,14 @@ public class Customer {
     }
 
     /** Sets the input customer full name to the Customer object.
-     * @param cusName*/
+     * @param cusName Customer Name */
     public void setCusFullName(String cusName) {
         this.cusName = cusName;
     }
 
     /** Sets the input customer full name to the Customer object.
-     * @param firstName
-     * @param lastName */
+     * @param firstName Customer First Name
+     * @param lastName  Customer Last Name */
     public void setCusFullName(String firstName, String lastName) {
         this.cusName = firstName + " " + lastName;
     }
@@ -80,7 +92,7 @@ public class Customer {
     }
 
     /** Sets the input customer address to the Customer object.
-     * @param cusAddress*/
+     * @param cusAddress Customer Address */
     public void setCusAddress(String cusAddress) {
         this.cusAddress = cusAddress;
     }
@@ -92,7 +104,7 @@ public class Customer {
     }
 
     /** Sets the input customer postal code to the Customer object.
-     * @param cusPostal*/
+     * @param cusPostal Customer Postal Code */
     public void setCusPostal(String cusPostal) {
         this.cusPostal = cusPostal;
     }
@@ -104,7 +116,7 @@ public class Customer {
     }
 
     /** Sets the input customer phone number to the Customer object.
-     * @param cusPhoneNum*/
+     * @param cusPhoneNum Customer Phone Number */
     public void setCusPhoneNum(String cusPhoneNum) {
         this.cusPhoneNum = cusPhoneNum;
     }
@@ -116,11 +128,34 @@ public class Customer {
     }
 
     /** Sets the input customer division ID to the Customer object.
-     * @param cusDivID*/
+     * @param cusDivID Customer Division ID */
     public void setCusDivID(int cusDivID) {
         this.cusDivID = cusDivID;
     }
 
+    /** Returns the customer division name from the Customer object.
+     * @return customer Division Name */
+    public String getCusDivName() {
+        return cusDivName;
+    }
+
+    /** Sets the input customer division name to the Customer object.
+     * @param cusDivName Customer Division ID */
+    public void setCusDivName(String cusDivName) {
+        this.cusDivName = cusDivName;
+    }
+
+    /** Returns the customer country name from the Customer object.
+     * @return customer Country Name */
+    public String getCusCountry() {
+        return cusCountry;
+    }
+
+    /** Sets the input customer country name to the Customer object.
+     * @param cusCountry Customer Division ID */
+    public void setCusCountry(String cusCountry) {
+        this.cusCountry = cusCountry;
+    }
 
     @Override
     public String toString(){

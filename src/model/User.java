@@ -1,18 +1,20 @@
 package model;
 
-/** This class creates the User object. */
+/** This class creates the User object.
+ * @author Aleksandr Ogilba */
 public class User {
     private int userId;
     private String userName;
     private String password;
 
+    /** This is an Empty Constructor */
     public User(){
     }
 
 /** This is a constructor that is used to create a User object.
- * @param userId
- * @param userName
- * @param password */
+ * @param userId User ID
+ * @param userName Username
+ * @param password Password */
     public User(int userId, String userName, String password) {
         this.userId = userId;
         this.userName = userName;
@@ -26,7 +28,7 @@ public class User {
     }
 
     /** Sets the input user ID to the User object.
-     * @param userId*/
+     * @param userId User ID */
     public void setUserId(int userId){
         this.userId = userId;
     }
@@ -38,7 +40,7 @@ public class User {
     }
 
     /** Sets the input username to the User object.
-     * @param userName*/
+     * @param userName Username */
     public void setUserName(String userName) {
         this.userName = userName;
     }
@@ -49,7 +51,7 @@ public class User {
     }
 
     /** Sets the input user's password to the User object.
-     * @param password*/
+     * @param password Password */
     public void setPassword(String password) {
         this.password = password;
     }

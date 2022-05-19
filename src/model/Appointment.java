@@ -2,7 +2,9 @@ package model;
 
 import java.sql.Timestamp;
 
-/** This class creates the Appointment object. */
+
+/** This class creates the Appointment object.
+ * @author Aleksandr Ogilba */
 public class Appointment {
     private int appID;
     private String appTitle;
@@ -15,21 +17,21 @@ public class Appointment {
     private User appUser;
     private Contact appContact;
 
-
+    /** This is an Empty Constructor */
     public Appointment() {
     }
 
     /** This is a constructor that is used to create an Appointment object.
-     * @param appID
-     * @param appTitle
-     * @param appDescription
-     * @param appLocation
-     * @param appType
-     * @param appStartDate
-     * @param appEndDate
-     * @param appCustomer
-     * @param appUser
-     * @param appContact */
+     * @param appID Appointment ID
+     * @param appTitle Appointment Title
+     * @param appDescription Appointment Description
+     * @param appLocation Appointment Location
+     * @param appType Appointment Type
+     * @param appStartDate Appointment Start Date
+     * @param appEndDate Appointment End Date
+     * @param appCustomer Appointment Customer
+     * @param appUser Appointment User
+     * @param appContact Appointment Contact */
     public Appointment(int appID, String appTitle, String appDescription, String appLocation, String appType, Timestamp appStartDate, Timestamp appEndDate, Customer appCustomer, User appUser, Contact appContact){
         this.appID = appID;
         this.appTitle = appTitle;
@@ -49,7 +51,7 @@ public class Appointment {
         return appID;
     }
     /** Sets the input appID to the Appointment object.
-     * @param appID*/
+     * @param appID The Appointment ID*/
     public void setAppID(int appID) {
         this.appID = appID;
     }
@@ -60,7 +62,7 @@ public class Appointment {
         return appTitle;
     }
     /** Sets the input appTitle to the Appointment object.
-     * @param appTitle */
+     * @param appTitle The Appointment Titla*/
     public void setAppTitle(String appTitle) {
         this.appTitle = appTitle;
     }
@@ -70,8 +72,9 @@ public class Appointment {
     public String getAppDescription() {
         return appDescription;
     }
+
     /** Sets the input appDescription to the Appointment object.
-     * @param appDescription */
+     * @param appDescription The Appointment Description*/
     public void setAppDescription(String appDescription) {
         this.appDescription = appDescription;
     }
@@ -82,7 +85,7 @@ public class Appointment {
         return appLocation;
     }
     /** Sets the input appLocation to the Appointment object.
-     * @param appLocation */
+     * @param appLocation The Appointment Location*/
     public void setAppLocation(String appLocation) {
         this.appLocation = appLocation;
     }
@@ -93,7 +96,7 @@ public class Appointment {
         return appType;
     }
     /** Sets the input appType to the Appointment object.
-     * @param appType */
+     * @param appType The Appointment Type */
     public void setAppType(String appType) {
         this.appType = appType;
     }
@@ -104,7 +107,7 @@ public class Appointment {
         return appStartDate;
     }
     /** Sets the input timestamp start date to the Appointment object.
-     * @param appStartDate */
+     * @param appStartDate The Appointment Start Date timestamp*/
     public void setAppStartDate(Timestamp appStartDate) {
         this.appStartDate = appStartDate;
     }
@@ -114,7 +117,7 @@ public class Appointment {
         return appEndDate;
     }
     /** Sets the input timestamp end date to the Appointment object.
-     * @param appEndDate */
+     * @param appEndDate The Appointment End Date timestamp. */
     public void setAppEndDate(Timestamp appEndDate) {
         this.appEndDate = appEndDate;
     }
@@ -125,7 +128,7 @@ public class Appointment {
         return appCustomer;
     }
     /** Sets the input appCustomer to the Appointment object.
-     * @param appCustomer */
+     * @param appCustomer The Customer whose appointment it is. */
     public void setAppCustomer(Customer appCustomer) {
         this.appCustomer = appCustomer;
     }
@@ -136,7 +139,7 @@ public class Appointment {
         return appUser;
     }
     /** Sets the input appUser to the Appointment object.
-     * @param appUser */
+     * @param appUser The user who entered the appointment*/
     public void setAppUser(User appUser) {
         this.appUser = appUser;
     }
@@ -147,7 +150,7 @@ public class Appointment {
         return appContact;
     }
     /** Sets the input appContact to the Appointment object.
-     * @param appContact */
+     * @param appContact The contact of the Appointment */
     public void setAppContact(Contact appContact) {
         this.appContact = appContact;
     }

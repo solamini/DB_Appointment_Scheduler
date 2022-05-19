@@ -31,7 +31,8 @@ public abstract class JDBC {
         }
     }
 
-    /** Gets connection with the database. */
+    /** Gets connection with the database.
+     * @return connection */
     public static Connection getConnection(){
         return connection;
     }

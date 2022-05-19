@@ -8,11 +8,12 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 
-/** This class launches the application and takes it to the login screen.*/
+/** This class launches the application and takes it to the login screen.
+ * @author Aleksandr Ogilba */
 public class Main extends Application {
 
     /** This method launches the login screen.
-     * @param primaryStage */
+     * @param primaryStage initial stage of login screen */
     @Override
     public void start(Stage primaryStage) throws Exception {
 

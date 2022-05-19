@@ -8,7 +8,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /** This class gets a connection with the database and uses various methods to query the database.
- * This class queries the database for data on appointments to create the Report object. */
+ * This class queries the database for data on appointments to create the Report object.
+ * @author Aleksandr Ogilba */
 public class ReportDaoImpl {
 
     /** Used to query the database and return information about appointment month, type and amount of appointments.

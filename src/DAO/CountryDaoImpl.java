@@ -8,12 +8,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /** This class gets a connection with the database and uses various methods to query the database.
- * This class queries the database for data on Countries. */
+ * This class queries the database for data on Countries.
+ * @author Aleksandr Ogilba */
 public class CountryDaoImpl {
 
     /** Used to query the database and return a Country based on the country ID.
      * This connects to the database, pulls data, and creates a Country Object.
-     * @param countryID
+     * @param countryID ID of Country
      * @return Country object */
     public static Country getCountry(int countryID) throws SQLException {
         Country countryResult = new Country();

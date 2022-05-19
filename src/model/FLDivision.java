@@ -1,18 +1,20 @@
 package model;
 
-/** This class creates the FLDiviosn object. */
+/** This class creates the FLDiviosn object.
+ * @author Aleksandr Ogilba */
 public class FLDivision {
     private int divID;
     private String divName;
     private int countryID;
 
+    /** This is an Empty Constructor */
     public FLDivision(){
     }
 
     /** This is a constructor that is used to create an FLDivision object.
-     * @param divID
-     * @param divName
-     * @param countryID */
+     * @param divID Division ID
+     * @param divName Division Name
+     * @param countryID Division's Country ID  */
     public FLDivision(int divID, String divName, int countryID) {
         this.divID = divID;
         this.divName = divName;
@@ -20,7 +22,7 @@ public class FLDivision {
     }
 
     /** Sets the input division ID to the FLDivision object.
-     * @param divID*/
+     * @param divID  Division ID */
     public void setDivID(int divID) {
         this.divID = divID;
     }
@@ -32,7 +34,7 @@ public class FLDivision {
     }
 
     /** Sets the input division name to the FLDivision object.
-     * @param divName*/
+     * @param divName Division Name */
     public void setDivName(String divName) {
         this.divName = divName;
     }
@@ -44,7 +46,7 @@ public class FLDivision {
     }
 
     /** Sets the input country ID to the FLDivision object.
-     * @param countryID*/
+     * @param countryID Division's Country ID */
     public void setCountryID(int countryID) {
         this.countryID = countryID;
     }

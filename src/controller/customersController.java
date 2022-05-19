@@ -15,6 +15,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import main.TimeZoneHelper;
+import model.Appointment;
 import model.Country;
 import model.Customer;
 import model.FLDivision;
@@ -27,7 +28,8 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-/** Interface declared to use a lambda expression in the following code. */
+/** Interface declared to use a lambda expression in the following code.
+ * @author Aleksandr Ogilba */
 interface GetCustomerID {
     int getUnusedCusID() throws SQLException;
 }
@@ -35,25 +37,58 @@ interface GetCustomerID {
 /** This is a controller for the customers.fxml file. */
 public class customersController implements Initializable {
 
-    public TableColumn CustomerID;
-    public TableColumn CustomerName;
-    public TableColumn CustomerAddress;
-    public TableColumn CustomerZip;
-    public TableColumn CustomerPhoneNum;
+    /** Table for all Customers */
     public TableView<Customer> CustomerTable;
 
+    /** Customer Table's Customer ID column. */
+    public TableColumn CustomerID;
+
+    /** Customer Table's Customer Name column. */
+    public TableColumn CustomerName;
+
+    /** Customer Table's Customer Address column. */
+    public TableColumn CustomerAddress;
+
+    /** Customer Table's Customer Postal Code column. */
+    public TableColumn CustomerZip;
+
+    /** Customer Table's Customer Phone number column. */
+    public TableColumn CustomerPhoneNum;
+
+    /** Customer Table's Customer Country column. */
+    public TableColumn CountryCol;
+
+    /** Customer Table's Customer First-Level Division column. */
+    public TableColumn StateCol;
+
+    /** Label that shows Customer ID */
     public Label CusIDLabel;
+
+    /** Editable textfield that shows Customer First Name */
     public TextField FirstNameText;
+
+    /** Editable textfield that shows Customer Last Name */
     public TextField LastNameText;
+
+    /** Editable textfield that shows Customer Address */
     public TextField AddressText;
+
+    /** Editable textfield that shows Customer Postal code */
     public TextField PostalText;
+
+    /** Editable textfield that shows Customer Phone number */
     public TextField PhoneNumberText;
 
+    /** Combobox that shows Customer country */
     public ComboBox CountryCombo;
+
+    /** Combobox that shows Customer First-Level Division */
     public ComboBox StateCombo;
 
+    /** Customer object of the currently selected customer */
     private static Customer currentCustomer = null;
 
+    /** Observable list of customers to populate the table */
     ObservableList<Customer> customersTableList = FXCollections.observableArrayList();
 
     /** Initializes and sets the Customer table to fill with all customers.
@@ -67,6 +102,8 @@ public class customersController implements Initializable {
         CustomerAddress.setCellValueFactory(new PropertyValueFactory<>("cusAddress"));
         CustomerZip.setCellValueFactory(new PropertyValueFactory<>("cusPostal"));
         CustomerPhoneNum.setCellValueFactory(new PropertyValueFactory<>("cusPhoneNum"));
+        CountryCol.setCellValueFactory(new PropertyValueFactory<>("cusCountry"));
+        StateCol.setCellValueFactory(new PropertyValueFactory<>("cusDivName"));
 
 
 
@@ -95,7 +132,7 @@ public class customersController implements Initializable {
 
     /** Takes all inputs and converts them to a Customer in the database.
      * Takes all of the user input and checks for any blanks. If no blanks, and all info is valid, it adds the customer into the database.
-     * @param actionEvent */
+     * @param actionEvent Clicking button */
     public void onAddClick(ActionEvent actionEvent) {
         //Used Lambda to create unused customer ID when adding the customer to the database. Goes through all the current customer ID's and returns the next available number.
         GetCustomerID number = () -> {
@@ -158,7 +195,7 @@ public class customersController implements Initializable {
 
     /** Takes all inputs and updates them to that Customer in the database.
      * Takes all of the user input and checks for any blanks. If no blanks, and all info is valid, it updates the customer in the database.
-     * @param actionEvent */
+     * @param actionEvent Clicking button */
     public void onUpdateClick(ActionEvent actionEvent) {
         Alert alert;
         try {
@@ -182,12 +219,18 @@ public class customersController implements Initializable {
                 int cusDivision = FLDivisionDaoImpl.getFLDivision(String.valueOf(StateCombo.getValue())).getDivID();
                 Timestamp createdTimeStamp = TimeZoneHelper.LocalToUTCTimestamp();
                 String userName = loginController.loggedInUser.getUserName();
+                String cusDivisionName = DAO.FLDivisionDaoImpl.getFLDivision(cusDivision).getDivName();
+                String cusCountry = CountryDaoImpl.getCountry(FLDivisionDaoImpl.getFLDivision(cusDivision).getCountryID()).getCountryName();
+
 
                 updateCustomer.setCusFullName(cusName);
                 updateCustomer.setCusAddress(cusAddress);
                 updateCustomer.setCusPostal(cusPostal);
                 updateCustomer.setCusPhoneNum(cusPhoneNum);
                 updateCustomer.setCusDivID(cusDivision);
+                updateCustomer.setCusDivName(cusDivisionName);
+                updateCustomer.setCusCountry(cusCountry);
+
 
                 CustomerTable.refresh();
 
@@ -206,8 +249,9 @@ public class customersController implements Initializable {
 
     /** Takes selected customer and deletes it.
      * If a customer has no appointments and after the user confirms the prompt that asks if they wish to delete, it deletes the customer.
-     * @param actionEvent */
+     * @param actionEvent Clicking button */
     public void onDeleteClick(ActionEvent actionEvent) {
+        ObservableList<Appointment> toDeleteList = FXCollections.observableArrayList();
         JDBC.getConnection();
         try {
             String cusID = CusIDLabel.getText();
@@ -229,8 +273,18 @@ public class customersController implements Initializable {
                         Alert alert2 = new Alert(Alert.AlertType.INFORMATION, "You have deleted the customer.");
                         alert2.show();
                     } else {
-                        Alert alert2 = new Alert(Alert.AlertType.ERROR, "You must first delete any associated appointments with this customer.");
-                        alert2.show();
+                        Alert alert2 = new Alert(Alert.AlertType.CONFIRMATION, "This will also delete any appointments associated with this customer.");
+                        result = alert2.showAndWait();
+                        if (result.isPresent() && result.get() == ButtonType.OK){
+                            toDeleteList.addAll(DAO.AppointmentDaoImpl.getAllCustomerAppointments(currentCustomer.getCusID()));//gets all appointments linked to customer
+                            for(Appointment app:toDeleteList) { //for all appointments linked to customer, iterates and deletes each one
+                                String sqlAppDelete = "DELETE FROM appointments WHERE Appointment_ID = '" + app.getAppID() + "'";
+                                Query.dataManipulateQuery(sqlAppDelete);
+                            }
+                            Query.dataManipulateQuery(sqlStmt);
+                            customersTableList = CustomerDaoImpl.getAllCustomers();
+                            CustomerTable.setItems(customersTableList);
+                        }
                     }
                 }
             }
@@ -243,13 +297,14 @@ public class customersController implements Initializable {
 
     }
 
-    /** Clears all fields if user clicks on the 'Clear' button. */
+    /** Clears all fields if user clicks on the 'Clear' button.
+     * @param actionEvent Button clicked */
     public void onClearClick(ActionEvent actionEvent) {
         clearAllFields();
     }
 
     /** When the Appointments button is clicked, takes user to the appointments screen.
-     * @param actionEvent */
+     * @param actionEvent Button clicked */
     public void onAppointmentsClick(ActionEvent actionEvent) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/view/appointments.fxml"));
         Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
@@ -259,7 +314,7 @@ public class customersController implements Initializable {
     }
 
     /** Sets all inputs to the values of the customer that user clicks on in the table.
-     * @param mouseEvent */
+     * @param mouseEvent Clicking on any item in the table */
     public void onMouseClickedOnTable(MouseEvent mouseEvent) {
         try {
             currentCustomer = CustomerTable.getSelectionModel().getSelectedItem();
@@ -287,7 +342,7 @@ public class customersController implements Initializable {
     }
 
     /** Sets the first-level division when user selects a country from the Country Combo box.
-     * @param actionEvent */
+     * @param actionEvent Selecting a country from the combobox */
     public void onCountryComboAction(ActionEvent actionEvent) {
         try{
             int countryID = ((Country) CountryCombo.getSelectionModel().getSelectedItem()).getCountryID();

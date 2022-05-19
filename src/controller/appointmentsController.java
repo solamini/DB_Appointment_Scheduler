@@ -22,58 +22,138 @@ import java.sql.SQLException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-/** This is a controller for the appointment.fxml file. */
+/** This is a controller for the appointment.fxml file.
+ * @author Aleksandr Ogilba */
 public class appointmentsController implements Initializable {
 
-
-    public TableView<Appointment> AllAppointmentsTable;
-
+    /** Table for Weekly Appointments */
     public TableView WeeklyAppointmentsTable;
+
+    /** Weekly Table's Appointment ID column. */
     public TableColumn WeeklyAppIDCol;
+
+    /** Weekly Table's Appointment Title column. */
     public TableColumn WeeklyTitleCol;
+
+    /** Weekly Table's Appointment Description column. */
     public TableColumn WeeklyDescriptionCol;
+
+    /** Weekly Table's Appointment Location column. */
     public TableColumn WeeklyLocationCol;
+
+    /** Weekly Table's Appointment Contact column. */
     public TableColumn WeeklyContactCol;
+
+    /** Weekly Table's Appointment Type column. */
     public TableColumn WeeklyTypeCol;
+
+    /** Weekly Table's Appointment Start Date column. */
     public TableColumn WeeklyStartDateTime;
+
+    /** Weekly Table's Appointment End Date column. */
     public TableColumn WeeklyEndDateTime;
+
+    /** Weekly Table's Customer ID column. */
     public TableColumn WeeklyCusID;
+
+    /** Weekly Table's User ID column. */
     public TableColumn WeeklyUserID;
 
+    /** Table for Monthly Appointments */
     public TableView MonthlyAppointmentsTable;
+
+    /** Monthly Table's Appointment ID column. */
     public TableColumn MonthlyAppIDCol;
+
+    /** Monthly Table's Appointment Title column. */
     public TableColumn MonthlyTitleCol;
+
+    /** Monthly Table's Appointment Description column. */
     public TableColumn MonthlyDescriptionCol;
+
+    /** Monthly Table's Appointment Location column. */
     public TableColumn MonthlyLocationCol;
+
+    /** Monthly Table's Appointment Contact column. */
     public TableColumn MonthlyContactCol;
+
+    /** Monthly Table's Appointment Type column. */
     public TableColumn MonthlyTypeCol;
+
+    /** Monthly Table's Appointment Start Date column. */
     public TableColumn MonthlyStartDateTime;
+
+    /** Monthly Table's Appointment End Date column. */
     public TableColumn MonthlyEndDateTime;
+
+    /** Monthly Table's Customer ID column. */
     public TableColumn MonthlyCusID;
+
+    /** Monthly Table's User ID column. */
     public TableColumn MonthlyUserID;
 
+    /** Tab that shows the All Appointments Table */
     public Tab AllAppTab;
+
+    /** Tab that shows the Weekly Appointments Table */
     public Tab WeeklyTab;
+
+    /** Tab that shows the Monthly Appointments Table */
     public Tab MonthlyTab;
+
+    /** Button that takes you to the screen to add Appointments */
     public Button AddAppointment;
+
+    /** Button that deletes Appointments */
     public Button DeleteAppointment;
+
+    /** Button that takes you to the screen to update Appointments */
     public Button UpdateAppointment;
+
+    /** Button that takes you to the Customers screen */
     public Button CustomersButton;
 
+    /** Observable List used to populate table */
     ObservableList<Appointment> appointmentsTableList = FXCollections.observableArrayList();
 
+    /** Table for All Appointments */
+    public TableView<Appointment> AllAppointmentsTable;
+
+    /** All Appointment Table's Appointment ID column. */
     public TableColumn AllAppIDCol;
+
+    /** All Appointment Table's Appointment Title column. */
     public TableColumn AllTitleCol;
+
+    /** All Appointment Table's Appointment Description column. */
     public TableColumn AllDescriptionCol;
+
+    /** All Appointment Table's Appointment Location column. */
     public TableColumn AllLocationCol;
+
+    /** All Appointment Table's Appointment Contact column. */
     public TableColumn AllContactCol;
+
+    /** All Appointment Table's Appointment Type column. */
     public TableColumn AllTypeCol;
+
+    /** All Appointment Table's Appointment Start Date column. */
     public TableColumn AllStartDateTime;
+
+    /** All Appointment Table's Appointment End Date column. */
     public TableColumn AllEndDateTime;
+
+    /** All Appointment Table's Customer ID column. */
     public TableColumn AllCusID;
+
+    /** All Appointment Table's User ID column. */
     public TableColumn AllUserID;
 
+    /** Appointment object of the currently selected appointment */
     private static Appointment currentAppointment = null; //the Appointment object to be passed to other screens when needed.
+
+    /** Gets the currentAppointment object
+     * @return Appointment object */
     public static Appointment getCurrentAppointment(){
         return currentAppointment;
     }
@@ -107,7 +187,7 @@ public class appointmentsController implements Initializable {
     }
 
     /** When the Add Appointment button is clicked, takes user to the add Appointments screen.
-     * @param actionEvent */
+     * @param actionEvent Clicking button */
     public void onAddAppointment(ActionEvent actionEvent) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/view/addAppointment.fxml"));
         Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
@@ -117,7 +197,7 @@ public class appointmentsController implements Initializable {
     }
 
     /** Deletes selected appointment after confirming first with an alert.
-     * @param actionEvent */
+     * @param actionEvent  Clicking button */
     public void onDeleteAppointment(ActionEvent actionEvent) {
         JDBC.getConnection();
         try {
@@ -147,17 +227,17 @@ public class appointmentsController implements Initializable {
     }
 
     /** When the Customers button is clicked, takes user to the Customers screen.
-     * @param actionEvent */
+     * @param actionEvent Clicking button */
     public void onCustomersClick(ActionEvent actionEvent) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/view/customers.fxml"));
         Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         stage.setTitle("Customers");
-        stage.setScene(new Scene(root, 785, 570));
+        stage.setScene(new Scene(root, 900, 570));
         stage.show();
     }
 
     /** When the Update Appointment button is clicked, takes user to the Update Appointments screen.
-     * @param actionEvent */
+     * @param actionEvent Clicking button */
     public void onUpdateAppointment(ActionEvent actionEvent) throws IOException {
         try {
             currentAppointment = AllAppointmentsTable.getSelectionModel().getSelectedItem();
@@ -175,7 +255,7 @@ public class appointmentsController implements Initializable {
     }
 
     /** Sets the table to hold all the appointments in the next seven days and fills the table.
-     * @param event */
+     * @param event Selecting Weekly Tab */
     public void onWeeklyTabSelected(Event event) {
         if(!AllAppTab.isSelected()){
             AddAppointment.setVisible(false);
@@ -205,7 +285,7 @@ public class appointmentsController implements Initializable {
     }
 
     /** Sets the table to hold all the appointments in the current month and fills the table.
-     * @param event */
+     * @param event Selecting Monthly Tab */
     public void onMonthlyTabSelected(Event event) {
         if(!AllAppTab.isSelected()){
             AddAppointment.setVisible(false);
@@ -234,7 +314,7 @@ public class appointmentsController implements Initializable {
 
     }
     /** Sets buttons to be visible when the All Appointments tab is selected.
-     * @param event */
+     * @param event Selecting the All Appointments tab */
     public void onAllAppTabSelected(Event event) {
         try {
             if (AllAppTab.isSelected()) {
@@ -247,7 +327,7 @@ public class appointmentsController implements Initializable {
     }
 
     /** When the Reports button is clicked, takes user to the Reports screen.
-     * @param actionEvent */
+     * @param actionEvent Clicking button */
     public void onReportsClicked(ActionEvent actionEvent) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/view/reports.fxml"));
         Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();

@@ -1,19 +1,20 @@
 package model;
 
-/** This class creates the Contact object. */
+/** This class creates the Contact object.
+ * @author Aleksandr Ogilba */
 public class Contact {
     private int contactID;
     private String contactName;
     private String contactEmail;
 
-
+    /** This is an Empty Constructor */
     public Contact() {
     }
 
     /** This is a constructor that is used to create a Contact object.
-     * @param contactID
-     * @param contactName
-     * @param contactEmail */
+     * @param contactID Contact ID
+     * @param contactName Contact Name
+     * @param contactEmail Contact Email */
     public Contact(int contactID, String contactName, String contactEmail) {
         this.contactID = contactID;
         this.contactName = contactName;
@@ -27,7 +28,7 @@ public class Contact {
     }
 
     /** Sets the input contact ID to the Contact object.
-     * @param contactID */
+     * @param contactID Contact ID*/
     public void setContactID(int contactID) {
         this.contactID = contactID;
     }
@@ -39,7 +40,7 @@ public class Contact {
     }
 
     /** Sets the input contact name to the Contact object.
-     * @param contactName */
+     * @param contactName Contact Name */
     public void setContactName(String contactName) {
         this.contactName = contactName;
     }
@@ -51,7 +52,7 @@ public class Contact {
     }
 
     /** Sets the input contact email to the Contact object.
-     * @param contactEmail */
+     * @param contactEmail Contact Email */
     public void setContactEmail(String contactEmail) {
         this.contactEmail = contactEmail;
     }

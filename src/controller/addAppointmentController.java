@@ -24,21 +24,47 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ResourceBundle;
 
-/** This is a controller for the addAppointment.fxml file. */
+/** This is a controller for the addAppointment.fxml file.
+ * @author Aleksandr Ogilba */
 public class addAppointmentController implements Initializable {
 
+    /** Textfield that shows title of Appointment */
     public TextField TitleTextField;
+
+    /** Textfield that shows description of Appointment */
     public TextField DescriptionTextField;
+
+    /** Textfield that shows location of Appointment */
     public TextField LocationTextField;
+
+    /** Combobox that allows user to select Contact */
     public ComboBox ContactCombo;
+
+    /** Textfield that shows type of Appointment */
     public TextField TypeTextField;
+
+    /** Combobox that allows user to select Customer */
     public ComboBox CustomerCombo;
+
+    /** Combobox that allows user to select User */
     public ComboBox UserCombo;
+
+    /** Textfield that shows the ID of Appointment */
     public Label AppIDLabel;
+
+    /** Textfield that shows the Start Date Minutes of Appointment */
     public TextField StartDateMinuteText;
+
+    /** Textfield that shows the Start Date Hours of Appointment */
     public TextField StartDateHourText;
+
+    /** Textfield that shows the End Date Minutes of Appointment */
     public TextField EndDateMinuteText;
+
+    /** Textfield that shows the End Date Hours of Appointment */
     public TextField EndDateHourText;
+
+    /** StartDatePicker that allows user to select date */
     public DatePicker StartDatePicker;
 
 
@@ -62,9 +88,30 @@ public class addAppointmentController implements Initializable {
     /** Takes all inputs and converts them to an Appointment in the database.
      * Takes all of the user input and checks for any blanks. If no blanks, it checks if the appointment time is within business hours,
      * and that it doesnt overlap with other appointments. If all info is valid, it adds the appointment into the database.
-     * @param actionEvent */
+     * @param actionEvent Clicking button */
     public void onAppointmentAdd(ActionEvent actionEvent) {
+        Boolean goodAppointmentTime = true;
         Alert alert;
+        try {
+            int startHour = Integer.parseInt(StartDateHourText.getText());
+            int startMinute = Integer.parseInt(StartDateMinuteText.getText());
+            int endHour = Integer.parseInt(EndDateHourText.getText());
+            int endMinute = Integer.parseInt(EndDateMinuteText.getText());
+            if(startHour<0 || startHour>23 || startMinute<0 || startMinute>59 || endHour<0 || endHour>23 || endMinute<0 || endMinute>59) {
+                alert = new Alert(Alert.AlertType.ERROR);
+                alert.setContentText("Please Enter a valid appointment time (0-23 Hours & 0-59 Minutes)");
+                alert.show();
+            } else if(endHour<startHour || endHour==startHour && endMinute<startMinute){
+                alert = new Alert(Alert.AlertType.ERROR);
+                alert.setContentText("Your appointment start time must be before the end time.");
+                alert.show();
+                goodAppointmentTime = false;
+            }
+        } catch (Exception e){
+            alert = new Alert(Alert.AlertType.ERROR);
+            alert.setContentText("Please Enter a valid appointment time (0-23 Hours & 0-59 Minutes)");
+            alert.show();
+        }
         try {
             if (TitleTextField.getText().isEmpty() || DescriptionTextField.getText().isEmpty() || LocationTextField.getText().isEmpty() || TypeTextField.getText().isEmpty()) {
                 alert = new Alert(Alert.AlertType.ERROR);
@@ -96,7 +143,6 @@ public class addAppointmentController implements Initializable {
                 String appUserID = String.valueOf(appUser.getUserId());
                 String contactID = String.valueOf(appContact.getContactID());
 
-                Boolean goodAppointmentTime = true;
                 LocalTime openLocalTime = LocalTime.of(8,0);
                 LocalTime closeLocalTime = LocalTime.of(22, 0);
                 LocalTime ESTAppStartTime = ESTStartTimeStamp.toLocalDateTime().toLocalTime();
@@ -108,7 +154,7 @@ public class addAppointmentController implements Initializable {
                     alert.show();
                 } else { //if the appointment time is within business hours, it continues to check for overlaps.
 
-                    for (Appointment a : DAO.AppointmentDaoImpl.getAllAppointmentsEST()) {
+                    for (Appointment a : DAO.AppointmentDaoImpl.getAllCustomerAppointmentsEST(appCustomer.getCusID())) {
                         if ((ESTStartTimeStamp.after(a.getAppStartDate()) && ESTStartTimeStamp.before(a.getAppEndDate()))
                                 || (ESTEndTimeStamp.after(a.getAppStartDate()) && ESTEndTimeStamp.before(a.getAppEndDate()))
                                 || (ESTStartTimeStamp.before(a.getAppStartDate()) && ESTEndTimeStamp.after(a.getAppEndDate()))
@@ -120,7 +166,6 @@ public class addAppointmentController implements Initializable {
                         }
                     }
                 }
-
 
                 if (goodAppointmentTime) {
                     JDBC.getConnection();
@@ -139,13 +184,13 @@ public class addAppointmentController implements Initializable {
             }
         }
         catch (Exception e) {
-            e.printStackTrace();
             Alert alert2 = new Alert(Alert.AlertType.WARNING);
             alert2.setContentText("Please check your inputs and try again. Make sure all fields are filled.");
         }
     }
 
-    /** When the Cancel button is clicked, takes user back to the appointments screen. */
+    /** When the Cancel button is clicked, takes user back to the appointments screen.
+     * @param actionEvent Clicking button */
     public void onAppointmentAddCancel(ActionEvent actionEvent) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/view/appointments.fxml"));
         Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();

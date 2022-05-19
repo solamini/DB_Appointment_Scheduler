@@ -22,31 +22,44 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicReference;
 
-/** Interface declared to use a lambda expression in the following code. */
+/** Interface declared to use a lambda expression in the following code.
+ * @author Aleksandr Ogilba */
 interface PrintActivity{
     void printActivityLog(String user, String timestamp, String failOrSuccess) throws IOException;
 }
     /** This is a controller for the login.fxml file. */
     public class loginController implements Initializable {
 
+    /** Label that shows user location */
     public Label UserLocation;
-    public Label UserLanguage;
+
+    /** Label that states Username */
     public Label Username;
+
+    /** Label that states Password */
     public Label Password;
+
+    /** Field where password is input */
     public PasswordField PasswordInput;
+
+    /** Field where username is input */
     public TextField UsernameInput;
 
+    /** String of user location */
+    private String userLocation = ZoneId.systemDefault().toString();
 
-    private String userLocation = String.valueOf(Locale.getDefault().getCountry());
-    private String userLanguage = String.valueOf(Locale.getDefault().getLanguage());
-
+    /** String if user logs in successfully */
     private String LoggedIn;
+
+    /** String if user does not log in successfully */
     private String NotLoggedIn;
 
+    /** User object of logged in user */
     public static User loggedInUser;
 
     /** Initializes and sets resources bundles to the correct language based on the system.
@@ -59,8 +72,8 @@ interface PrintActivity{
 
         Username.setText(rb.getString("Username"));
         Password.setText(rb.getString("Password"));
-        UserLocation.setText(rb.getString("Location") + ": " + userLocation);
-        UserLanguage.setText(rb.getString("Language") + ": " + userLanguage);
+        UserLocation.setText(rb.getString("ZoneID") + ": " + userLocation);
+
 
         LoggedIn = rb.getString("LoggedIn");
         NotLoggedIn = rb.getString("NotLoggedIn");
@@ -69,8 +82,8 @@ interface PrintActivity{
 
     /** Uses the inputs to verify the login information entered.
      * Attempts to verify the information based on Users in the database. If successful login, opens the customers screen.
-     * Also logs the login attemps in a seperate text file.
-     * @param event */
+     * Also logs the login attempts in a separate text file.
+     * @param event login button clicked */
     @FXML
     void onLoginPress(ActionEvent event) throws SQLException, IOException {
         Timestamp currentESTTimeStamp = main.TimeZoneHelper.LocalToESTTimestamp(Timestamp.valueOf(LocalDateTime.now()));
@@ -96,7 +109,7 @@ interface PrintActivity{
                 Parent root = FXMLLoader.load(getClass().getResource("/view/customers.fxml"));
                 Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
                 stage.setTitle("Customers");
-                stage.setScene(new Scene(root, 785, 570));
+                stage.setScene(new Scene(root, 900, 570));
                 stage.show();
                 loggedInUser = UserDaoImpl.getUser(UsernameInput.getText());
                 printThisActivity.printActivityLog(UsernameInput.getText(),main.TimeZoneHelper.LocalToUTCTimestamp().toString(),"succeeded.");

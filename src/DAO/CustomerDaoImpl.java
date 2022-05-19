@@ -8,14 +8,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /** This class gets a connection with the database and uses various methods to query the database.
- * This class queries the database for data on Customers. */
+ * This class queries the database for data on Customers.
+ * @author Aleksandr Ogilba */
 public class CustomerDaoImpl {
 
     /**
      * Used to query the database and return a Customer based on the customer ID.
      * This connects to the database, pulls data, and creates a Customer Object.
      *
-     * @param cusID
+     * @param cusID ID of Customer
      * @return Customer object
      */
     public static Customer getCustomer(int cusID) throws SQLException {

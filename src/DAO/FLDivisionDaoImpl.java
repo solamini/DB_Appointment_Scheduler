@@ -8,12 +8,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /** This class gets a connection with the database and uses various methods to query the database.
- * This class queries the database for data on First-Level Divisions. */
+ * This class queries the database for data on First-Level Divisions.
+ * @author Aleksandr Ogilba */
 public class FLDivisionDaoImpl {
 
     /** Used to query the database and return a First-Level Division based on the division ID.
      * This connects to the database, pulls data, and creates an FLDivision Object.
-     * @param divID
+     * @param divID ID of First-Level Division
      * @return FLDivision object */
     public static FLDivision getFLDivision(int divID) throws SQLException {
         FLDivision divisionResult = new FLDivision();
@@ -34,7 +35,7 @@ public class FLDivisionDaoImpl {
 
     /** Used to query the database and return a First-Level Division based on the division name.
      * This connects to the database, pulls data, and creates an FLDivision Object.
-     * @param divName
+     * @param divName Name of First-Level Division
      * @return FLDivision object */
     public static FLDivision getFLDivision(String divName) throws SQLException {
         FLDivision divisionResult = new FLDivision();
@@ -75,7 +76,7 @@ public class FLDivisionDaoImpl {
 
     /** Used to query the database and return a all First-Level Divisions based on country ID.
      * This connects to the database, pulls data, and creates a FLDivision Object, and puts them into an observable list.
-     * @param countryID
+     * @param countryID ID of Country
      * @return List of all FLDivision objects with the input Country ID */
     public static ObservableList<FLDivision> getAllCountryDivisions(int countryID) throws SQLException {
         ObservableList<FLDivision> divisionsList = FXCollections.observableArrayList();

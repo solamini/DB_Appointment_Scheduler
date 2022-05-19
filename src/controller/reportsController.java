@@ -29,39 +29,95 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
-/** This is a controller for the reports.fxml file. */
+/** This is a controller for the reports.fxml file.
+ * @author Aleksandr Ogilba */
 public class reportsController implements Initializable {
 
+    /** Table for Contact's Appointments */
     public TableView ContactAppointmentsTable;
+
+    /** Contact Appointment Table's Appointment ID column. */
     public TableColumn ContactAppIDCol;
+
+    /** Contact Appointment Table's Appointment Title column. */
     public TableColumn ContactTitleCol;
+
+    /** Contact Appointment Table's Appointment Description column. */
     public TableColumn ContactDescriptionCol;
+
+    /** Contact Appointment Table's Appointment Location column. */
     public TableColumn ContactLocationCol;
+
+    /** Contact Appointment Table's Appointment Contact column. */
     public TableColumn ContactCol;
+
+    /** Contact Appointment Table's Appointment Type column. */
     public TableColumn ContactTypeCol;
+
+    /** Contact Appointment Table's Appointment Start Date column. */
     public TableColumn ContactStartDateTime;
+
+    /** Contact Appointment Table's Appointment End Date column. */
     public TableColumn ContactEndDateTime;
+
+    /** Contact Appointment Table's Customer ID column. */
     public TableColumn ContactCusID;
+
+    /** Contact Appointment Table's User ID column. */
     public TableColumn ContactUserID;
+
+    /** Combobox to select which contact to view appointments of */
     public ComboBox ContactCombo;
+
+    /** Label that shows what is selectable in combobox */
     public Label SelectionLabel;
 
+    /** Table for Monthly report on Appointments type */
     public TableView MonthlyAppointmentsTable;
+
+    /** Monthly Appointment Table's Appointment month column. */
     public TableColumn MonthCol;
+
+    /** Monthly Appointment Table's Appointment Type column. */
     public TableColumn TypeCol;
+
+    /** Monthly Appointment Table's Appointments Total column. */
     public TableColumn TotalCol;
 
+    /** Table for Customer's Appointments */
     public TableView CustomerAppointmentsTable;
+
+    /** Combobox to select which customer ID to view appointments of */
     public ComboBox CustomerCombo;
+
+    /** Customer Appointment Table's Appointment ID column. */
     public TableColumn CustomerAppIDCol;
+
+    /** Customer Appointment Table's Appointment Title column. */
     public TableColumn CustomerTitleCol;
+
+    /** Customer Appointment Table's Appointment ID column. */
     public TableColumn CustomerDescriptionCol;
+
+    /** Customer Appointment Table's Appointment Location column. */
     public TableColumn CustomerLocationCol;
+
+    /** Customer Appointment Table's Appointment Customer column. */
     public TableColumn CustomerCol;
+
+    /** Customer Appointment Table's Appointment Type column. */
     public TableColumn CustomerTypeCol;
+
+    /** Customer Appointment Table's Appointment Start Date column. */
     public TableColumn CustomerStartDateTime;
+
+    /** Customer Appointment Table's Appointment End Date column. */
     public TableColumn CustomerEndDateTime;
+
+    /** Customer Appointment Table's Customer ID column. */
     public TableColumn CustomerCusID;
+
+    /** Customer Appointment Table's User ID column. */
     public TableColumn CustomerUserID;
 
     /** Initializes and fills the Contact Appointments table with all the appointments.
@@ -95,7 +151,7 @@ public class reportsController implements Initializable {
     }
 
     /** When the monthly tab is selected, sets the table settings and fills it with a list of the Report.
-     * @param event */
+     * @param event Monthly tab selected */
     public void onMonthlyTotalsTabSelected(Event event) {
 
         MonthCol.setCellValueFactory(new PropertyValueFactory<>("repMonth"));
@@ -116,7 +172,7 @@ public class reportsController implements Initializable {
     }
 
     /** When the customer tab is selected, sets the table settings for the Customer's appointments.
-     * @param event */
+     * @param event Customer tab selected */
     public void onCustomerTabSelected(Event event) {
 
         CustomerAppIDCol.setCellValueFactory(new PropertyValueFactory<>("appID"));
@@ -146,7 +202,7 @@ public class reportsController implements Initializable {
     }
 
     /** When the Appointments button is clicked, takes user back to the appointments screen.
-     * @param actionEvent */
+     * @param actionEvent Button clicked */
     public void AppointmentsClick(ActionEvent actionEvent) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/view/appointments.fxml"));
         Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
@@ -156,7 +212,7 @@ public class reportsController implements Initializable {
     }
 
     /** When a contact is selected from the Contact combo box, it fills the table with appointments related to the contact.
-     * @param actionEvent */
+     * @param actionEvent Contact selected in combobox */
     public void onContactCombo(ActionEvent actionEvent) {
 
         try {
@@ -171,7 +227,7 @@ public class reportsController implements Initializable {
     }
 
     /** When the contact tab is selected, sets the settings to show the contact items.
-     * @param event */
+     * @param event Contact tab selected */
     public void onContactScheduleSelected(Event event) {
         try {
             CustomerCombo.setVisible(false);
@@ -184,7 +240,7 @@ public class reportsController implements Initializable {
         }
     }
     /** When a customer is selected from the Customer combo box, it fills the table with appointments related to the customer.
-     * @param actionEvent */
+     * @param actionEvent Customer selected from combobox */
     public void onCustomerCombo(ActionEvent actionEvent) {
 
         try {

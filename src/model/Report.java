@@ -1,18 +1,20 @@
 package model;
 
-/** This class creates the Report object. */
+/** This class creates the Report object.
+ *  @author Aleksandr Ogilba*/
 public class Report {
     private String repMonth;
     private String repType;
     private String repAmount;
 
+    /** This is an Empty Constructor */
     public Report(){
     }
 
     /** This is a constructor that is used to create a Report object.
-     * @param month
-     * @param type
-     * @param amount */
+     * @param month Month of Appointment in Report
+     * @param type Type of Appointment in Report
+     * @param amount Amount of times Appointment occurs in month with type */
     public Report (String month, String type, String amount) {
         this.repMonth = month;
         this.repType = type;
@@ -20,7 +22,7 @@ public class Report {
     }
 
     /** Sets the input month to the Report object.
-     * @param repMonth*/
+     * @param repMonth Month of Appointment in Report */
     public void setRepMonth(String repMonth) {
         this.repMonth = repMonth;
     }
@@ -32,7 +34,7 @@ public class Report {
     }
 
     /** Sets the input type to the Report object.
-     * @param repType*/
+     * @param repType Type of Appointment in Report */
     public void setRepType(String repType) {
         this.repType = repType;
     }
@@ -44,7 +46,7 @@ public class Report {
     }
 
     /** Sets the input amount to the Report object.
-     * @param repAmount*/
+     * @param repAmount Amount of times Appointment occurs in month with type */
     public void setRepAmount(String repAmount) {
         this.repAmount = repAmount;
     }

@@ -8,12 +8,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /** This class gets a connection with the database and uses various methods to query the database.
- * This class queries the database for data on Users. */
+ * This class queries the database for data on Users.
+ * @author Aleksandr Ogilba */
 public class UserDaoImpl {
 
     /** Used to query the database and return a User based on the username.
      * This connects to the database, pulls data, and creates an User Object.
-     * @param userName
+     * @param userName Username of User
      * @return User object */
     public static User getUser(String userName) throws SQLException{
         User userResult = new User();
@@ -34,7 +35,7 @@ public class UserDaoImpl {
 
     /** Used to query the database and return a User based on the user ID.
      * This connects to the database, pulls data, and creates an User Object.
-     * @param userID
+     * @param userID ID of user
      * @return User object */
     public static User getUser(int userID) throws SQLException{
         User userResult = new User();
@@ -76,8 +77,8 @@ public class UserDaoImpl {
 
     /** Checks to see if the login attempt was successful or not.
      * Takes in two strings and checks them against the users in the database to see if they match username and password.
-     * @param inputUsername
-     * @param inputPassword
+     * @param inputUsername Username of user
+     * @param inputPassword Password of user
      * @return true or false depending if the login attempt was successful. */
     public static Boolean loginAttempt(String inputUsername, String inputPassword) throws SQLException {
         User newUser = getUser(inputUsername);

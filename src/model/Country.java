@@ -1,23 +1,25 @@
 package model;
 
-/** This class creates the Country object. */
+/** This class creates the Country object.
+ * @author Aleksandr Ogilba  */
 public class Country {
     private int countryID;
     private String countryName;
 
+    /** This is an Empty Constructor */
     public Country(){
     }
 
     /** This is a constructor that is used to create a Country object.
-     * @param countryID
-     * @param countryName */
+     * @param countryID Country ID
+     * @param countryName Country Name */
     public Country(int countryID, String countryName) {
         this.countryID = countryID;
         this.countryName = countryName;
     }
 
     /** Sets the input country ID to the Country object.
-     * @param countryID*/
+     * @param countryID Country ID */
     public void setCountryID(int countryID) {
         this.countryID = countryID;
     }
@@ -29,7 +31,7 @@ public class Country {
     }
 
     /** Sets the input country Name to the Country object.
-     * @param countryName*/
+     * @param countryName Country Name */
     public void setCountryName(String countryName) {
         this.countryName = countryName;
     }

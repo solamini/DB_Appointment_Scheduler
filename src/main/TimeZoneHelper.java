@@ -2,11 +2,11 @@ package main;
 
 import java.sql.Timestamp;
 import java.time.*;
-import java.time.temporal.TemporalAdjusters;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-/** This is a helper class that helps converting time from various timezones. */
+/** This is a helper class that helps converting time from various timezones.
+ * @author Aleksandr Ogilba */
 public class TimeZoneHelper {
 
     /** This method returns the current time in the UTC time zone as a timestamp.
@@ -24,7 +24,7 @@ public class TimeZoneHelper {
 
     }
     /** This method converts the local Timestamp into a UTC timestamp.
-     * @param localTimeStamp
+     * @param localTimeStamp Current local timestamp
      * @return This returns the UTC timestamp. */
     public static Timestamp LocalToUTCTimestamp(Timestamp localTimeStamp) {
         LocalDateTime localDT = localTimeStamp.toLocalDateTime();
@@ -40,7 +40,7 @@ public class TimeZoneHelper {
     }
 
     /** This method converts the local timestamp to an Eastern timestamp.
-     * @param localTimeStamp
+     * @param localTimeStamp Current local timestamp
      * @return Returns the EST Timestamp. */
     public static Timestamp LocalToESTTimestamp(Timestamp localTimeStamp) {
         LocalDateTime localDT = localTimeStamp.toLocalDateTime();
@@ -89,7 +89,7 @@ public class TimeZoneHelper {
     }
 
     /** This method takes in a timestamp and tells you the hours in it.
-     * @param timestamp
+     * @param timestamp Any timestamp to convert to hours
      * @return Returns the value of hours as a string. */
     public static String HoursFromTimestamp(Timestamp timestamp) {
 
@@ -102,7 +102,7 @@ public class TimeZoneHelper {
     }
 
     /** This method takes in a timestamp and tells you the minutes in it.
-     * @param timestamp
+     * @param timestamp Any timestamp to extract minutes
      * @return Returns the value of minutes as a string. */
     public static String MinutesFromTimestamp(Timestamp timestamp) {
 
@@ -115,7 +115,7 @@ public class TimeZoneHelper {
     }
 
     /** This method takes in a timestamp and adds 7 days of time to it.
-     * @param timestamp
+     * @param timestamp Any timestamp to add 7 days to
      * @return Returns a new timestamp that is 7 days after the input timestamp. */
     public static Timestamp TimestampPlus7Days(Timestamp timestamp){
         int sevenDaysInMiliseconds = 604800 *1000;
@@ -127,34 +127,22 @@ public class TimeZoneHelper {
         return newTimeStamp;
     }
 
-    /** This method gives you the timestamp for the first day of the current month.
-     * @return Returns timestamp of the first day of the current month. */
-    public static Timestamp FirstDayOfMonthTS(){
+    /** This method takes in a timestamp and adds 30 days of time to it.
+     * @param timestamp Any timestamp to add 30 days to
+     * @return Returns a new timestamp that is 30 days after the input timestamp. */
+    public static Timestamp TimestampPlus30Days(Timestamp timestamp){
+        long thirtyDaysInMiliseconds = 60*60*24*30*1000L;
+        String oldTSString = timestamp.toString();
+        Timestamp oldTimeStamp = Timestamp.valueOf(oldTSString);
+        oldTimeStamp.setTime(timestamp.getTime()+thirtyDaysInMiliseconds);
+        Timestamp newTimeStamp = oldTimeStamp;
 
-        LocalDate currentLocalDate = LocalDate.now();
-        LocalDate firstOfMonthLD = currentLocalDate.with(TemporalAdjusters.firstDayOfMonth());
-        LocalTime testLT = LocalTime.MIN;
-        LocalDateTime firstOfMonthLDT = LocalDateTime.of(firstOfMonthLD,testLT);
-        Timestamp firstOfMonthTS = Timestamp.valueOf(firstOfMonthLDT);
-
-        return firstOfMonthTS;
+        return newTimeStamp;
     }
 
-    /** This method gives you the timestamp for the last day of the current month.
-     * @return Returns timestamp of the last day of the current month. */
-    public static Timestamp LastDayOfMonthTS(){
-
-        LocalDate currentLocalDate = LocalDate.now();
-        LocalDate lastOfMonthLD = currentLocalDate.with(TemporalAdjusters.lastDayOfMonth());
-        LocalTime testLT = LocalTime.MAX;
-        LocalDateTime lastOfMonthLDT = LocalDateTime.of(lastOfMonthLD,testLT);
-        Timestamp lastOfMonthTS = Timestamp.valueOf(lastOfMonthLDT);
-
-        return lastOfMonthTS;
-    }
 
     /** This method takes in a timestamp and adds 15 minutes of time to it.
-     * @param startingTimeStamp
+     * @param startingTimeStamp Any timestamp to add 15 minutes to
      * @return Returns a new timestamp that is 15 minutes after the input timestamp. */
     public static Timestamp TimeStampPlus15Min(Timestamp startingTimeStamp){
         int fifteenMinutesInMiliSeconds = 15*60*1000;

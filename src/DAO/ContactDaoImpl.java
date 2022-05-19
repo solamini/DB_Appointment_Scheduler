@@ -8,12 +8,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /** This class gets a connection with the database and uses various methods to query the database.
- * This class queries the database for data on Contacts. */
+ * This class queries the database for data on Contacts.
+ * @author Aleksandr Ogilba */
 public class ContactDaoImpl {
 
     /** Used to query the database and return a Contact based on the contact ID.
      * This connects to the database, pulls data, and creates a Contact Object.
-     * @param contactID
+     * @param contactID ID of contact
      * @return Contact object */
     public static Contact getContact(int contactID) throws SQLException {
         Contact contactResult = new Contact();

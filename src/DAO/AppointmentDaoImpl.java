@@ -13,12 +13,13 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 
 /** This class gets a connection with the database and uses various methods to query the database.
- * This class queries the database for data on Appointments. */
+ * This class queries the database for data on Appointments.
+ * @author Aleksandr Ogilba */
 public class AppointmentDaoImpl {
 
     /** Used to query the database and return an Appointment based on the appointment ID.
      * This connects to the database, pulls data, and creates an Appointment Object.
-     * @param appID
+     * @param appID Appointment ID
      * @return Appointment object */
     public static Appointment getAppointment(int appID) throws SQLException {
         Appointment appResult = new Appointment();
@@ -164,9 +165,10 @@ public class AppointmentDaoImpl {
      * @return List of all Appointment Objects for the current month. */
     public static ObservableList<Appointment> getMonthlyAppointments() throws SQLException {
         ObservableList<Appointment> appList = FXCollections.observableArrayList();
+        Timestamp currentTS = new Timestamp(System.currentTimeMillis());
 
         JDBC.getConnection();
-        String sqlStmt = "SELECT * FROM appointments WHERE start BETWEEN '"+main.TimeZoneHelper.FirstDayOfMonthTS()+"' AND '"+main.TimeZoneHelper.LastDayOfMonthTS()+"'";
+        String sqlStmt = "SELECT * FROM appointments WHERE start BETWEEN '"+currentTS+"' AND '"+main.TimeZoneHelper.TimestampPlus30Days(currentTS)+"'";
 
         Query.makeQuery(sqlStmt);
         ResultSet result = Query.getResult();
@@ -198,7 +200,7 @@ public class AppointmentDaoImpl {
 
     /** Used to query the database and return an Appointment list based on the contact ID associated with the appointment.
      * This connects to the database, pulls data, and creates an Appointment Object.
-     * @param contactID
+     * @param contactID ID of Contact to get all their appointments
      * @return Appointment object list */
     public static ObservableList<Appointment> getAllContactAppointments(int contactID) throws SQLException {
         ObservableList<Appointment> appList = FXCollections.observableArrayList();
@@ -233,7 +235,7 @@ public class AppointmentDaoImpl {
 
     /** Used to query the database and return an Appointment list based on the customer ID.
      * This connects to the database, pulls data, and creates an Appointment Object.
-     * @param cusID
+     * @param cusID ID of customer to get all their appointments
      * @return Appointment object list */
     public static ObservableList<Appointment> getAllCustomerAppointments(int cusID) throws SQLException {
         ObservableList<Appointment> appList = FXCollections.observableArrayList();
@@ -252,6 +254,40 @@ public class AppointmentDaoImpl {
             String appEndDateString = result.getString("End");
             Timestamp appStartDateTSLocal = main.TimeZoneHelper.UTCToLocalTimestamp(Timestamp.valueOf(appStartDateString));
             Timestamp appEndDateTSLocal = main.TimeZoneHelper.UTCToLocalTimestamp(Timestamp.valueOf(appEndDateString));
+            int cusId = result.getInt("Customer_ID");
+            int userId = result.getInt("User_ID");
+            int contactId = result.getInt("Contact_ID");
+
+            Customer appCustomer = DAO.CustomerDaoImpl.getCustomer(cusId);
+            User appUser = DAO.UserDaoImpl.getUser(userId);
+            Contact appContact = DAO.ContactDaoImpl.getContact(contactId);
+
+            Appointment appResult = new Appointment(appId, appTitle, appDescription, appLocation, appType, appStartDateTSLocal, appEndDateTSLocal, appCustomer, appUser, appContact);
+            appList.add(appResult);
+        }
+        return appList;
+    }
+    /** Used to query the database and return an Appointment list with Eastern timestamps based on the customer ID.
+     * This connects to the database, pulls data, and creates an Appointment Object.
+     * @param cusID ID of customer to get all their appointments
+     * @return Appointment object list */
+    public static ObservableList<Appointment> getAllCustomerAppointmentsEST(int cusID) throws SQLException {
+        ObservableList<Appointment> appList = FXCollections.observableArrayList();
+
+        JDBC.getConnection();
+        String sqlStmt = "SELECT * FROM appointments WHERE Customer_ID ="+cusID;
+        Query.makeQuery(sqlStmt);
+        ResultSet result = Query.getResult();
+        while (result.next()) {
+            int appId = result.getInt("Appointment_ID");
+            String appTitle = result.getString("Title");
+            String appDescription = result.getString("Description");
+            String appLocation = result.getString("Location");
+            String appType = result.getString("Type");
+            String appStartDateString = result.getString("Start");
+            String appEndDateString = result.getString("End");
+            Timestamp appStartDateTSLocal = main.TimeZoneHelper.UTCToESTTimestamp(Timestamp.valueOf(appStartDateString));
+            Timestamp appEndDateTSLocal = main.TimeZoneHelper.UTCToESTTimestamp(Timestamp.valueOf(appEndDateString));
             int cusId = result.getInt("Customer_ID");
             int userId = result.getInt("User_ID");
             int contactId = result.getInt("Contact_ID");
